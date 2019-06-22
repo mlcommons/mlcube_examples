@@ -6,7 +6,7 @@
 = MLPerf Submission Rules (Training and Inference)
 May 2nd, 2018
 
-== UNDERGOING REVISION: 
+== UNDERGOING REVISION 
 This document needs to be revised. If you are a member of the Forum, you can read the following working docs:
 
 https://docs.google.com/document/d/1YNGymVFuQdoH7tPFHWk6siSkFdvyHqKi3FuBTXaoxfM/edit[v0.5 Submission rules]
