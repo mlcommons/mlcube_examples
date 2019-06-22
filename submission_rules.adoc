@@ -6,10 +6,17 @@
 = MLPerf Submission Rules (Training and Inference)
 May 2nd, 2018
 
+== UNDERGOING REVISION: 
+This document needs to be revised. If you are a member of the Forum, you can read the following working docs:
 
+https://docs.google.com/document/d/1YNGymVFuQdoH7tPFHWk6siSkFdvyHqKi3FuBTXaoxfM/edit[v0.5 Submission rules]
 
+https://docs.google.com/document/d/1UZ4O3nYzYRE6nVdkCCcd5LaZtC_RWOexyIvZVDurcDg/edit[v0.6 Submission rules changes]
 
-== OBSOLETE RULES IMPORTED FROM TRAINING_RULES FOR AUDIT TRAIL
+https://docs.google.com/document/d/1Hu9xeW4shkmbP4cnBaFs7YvbK-tcY_v1Mqt8ZioCR-0/edit[Submission categories]
+
+== OBSOLETE RULES
+Imported from training rules for audit trail.
 
 == Submission Result Set
 All results in a submission result set must be for benchmarks from the same suite and produced under the rules of the same division. Results may be reported for one, some, or all benchmarks. 
