@@ -1,0 +1,6 @@
+platform:
+  name: "docker"
+  version: ">=19.03.9"
+
+container:
+  image: "serebrya/mlperf-mnist:0.0.1"
