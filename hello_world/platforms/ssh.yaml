@@ -1,0 +1,12 @@
+host: "mlcube-remote"
+
+authentication:
+
+platform: "docker.yaml"
+
+interpreter:
+    type: "virtualenv"
+    python: "python3.6"
+    requirements: "mlcube_docker"
+    location: "${HOME}/mlcube/environments"
+    name: "mlcube_docker"
