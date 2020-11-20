@@ -65,7 +65,7 @@ virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-d
 
 ## Clone MLCube examples and go to EMDenoise root directory
 ```
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/mnist
+git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/emdenoise
 ```
 
 ## Run EMDenoise MLCube on a local machine with Docker runner
