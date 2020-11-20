@@ -19,7 +19,11 @@ mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/alice/hello.yaml
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/alice/bye.yaml
 ```
-Go to `workspace/` directory and study its content. 
+Go to `workspace/` directory and study its content. Then:
+```
+sudo rm -r ./workspace/chats
+```
+ 
 
 ## Run Hello World MLCube on a local machine with Singularity runner
 ```
@@ -30,7 +34,10 @@ mlcube_singularity configure --mlcube=. --platform=platforms/singularity.yaml
 mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/alice/hello.yaml
 mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/alice/bye.yaml
 ```
-Go to `workspace/` directory and study its content. 
+Go to `workspace/` directory and study its content. Then:
+```
+sudo rm -r ./workspace/chats
+```
 
 ## Run Hello World MLCube on a remote machine with SSH runner
 Setup passwordless access to a remote machine. Create and/or update your SSH configuration file (`~/.ssh/config`).
@@ -52,4 +59,7 @@ mlcube_ssh configure --mlcube=. --platform=platforms/ssh.yaml
 mlcube_ssh run --mlcube=. --platform=platforms/ssh.yaml --task=run/alice/hello.yaml
 mlcube_ssh run --mlcube=. --platform=platforms/ssh.yaml --task=run/alice/bye.yaml
 ```
-Go to `workspace/` directory and study its content.
+Go to `workspace/` directory and study its content. Then:
+```
+sudo rm -r ./workspace/chats
+```
