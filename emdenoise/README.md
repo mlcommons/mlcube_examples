@@ -81,6 +81,10 @@ mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/test.ya
 ```
 Go to `workspace/` directory and study its content.
 
+## Contribution
+
+Contribution by Digital Science Center, Indiana University Bloomington.
+
 ## References
 
 1. https://github.com/stfc-sciml/sciml-benchmarks
