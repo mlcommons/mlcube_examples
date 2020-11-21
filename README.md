@@ -26,4 +26,4 @@ This repository contains a number of MLCube examples that can run in different e
    MLCube [documentation](https://mlperf.github.io/mlcube/getting-started/mnist/) provides additional details. 
 2. [Hello World](./hello_world) MLCube is a simple exampled described in this 
    [tutorial](https://mlperf.github.io/mlcube/getting-started/hello-world/). 
-
+3. [MLCube Template](./mlcube_template) is a template for creating MLCubes. This is work in progress.
