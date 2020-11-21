@@ -83,7 +83,7 @@ Go to `workspace/` directory and study its content.
 
 ## Contribution
 
-Contribution by Digital Science Center, Indiana University Bloomington.
+Contributed by Digital Science Center, Indiana University Bloomington.
 
 ## References
 
