@@ -23,6 +23,6 @@ RUN pip3 install --no-cache-dir -r /requirements.txt
 COPY matmul.py /workspace/matmul.py
 
 # defult parameter to ENTRYPOINT 
-CMD  ["10"]
+# CMD  ["10"]
 
 ENTRYPOINT ["python3", "/workspace/matmul.py"]

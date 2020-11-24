@@ -11,7 +11,8 @@ task_name: matmul
 
 # Dictionary of input bindings (dictionary mapping strings to strings). Parameters must correspond to those in task
 # file (`inputs` section). If not parameters are provided, the binding section must be an empty dictionary.
-input_binding: {}
+input_binding:
+        parameters_file: $WORKSPACE/shapes.yaml
 
 # Dictionary of output bindings (dictionary mapping strings to strings). Parameters must correspond to those in task
 # file (`outputs` section). Every parameter is a file system path (directory or a file name). Paths can be absolute
@@ -23,5 +24,3 @@ input_binding: {}
 # NEXT: study `platforms/docker.yaml`.
 output_binding:
         output_file: $WORKSPACE/matmul.txt
-        # data_dir: $WORKSPACE/data
-        # log_dir: $WORKSPACE/download_logs

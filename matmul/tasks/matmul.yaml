@@ -11,8 +11,10 @@
 schema_version: 1.0.0
 schema_type: mlcube_task
 
-# List of input parameters (list of dictionaries). For example, it's empty here.
-inputs: []
+# List of input parameters (list of dictionaries).
+inputs:
+    - name: parameters_file
+      type: file
 
 # List of output parameters (list of dictionaries). Every parameter is a dictionary with two mandatory fields - `name`
 # and `type`. The `name` must have value that can be used as a command line parameter name (--data_dir, --log_dir). The
@@ -25,8 +27,3 @@ inputs: []
 outputs:
     - name: output_file
       type: file
-        # - name: data_dir
-        #   type: directory
-
-        # - name: log_dir
-        #   type: directory
