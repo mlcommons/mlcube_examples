@@ -12,5 +12,4 @@ platform:
   name: "docker"
   version: ">=18.01"
 container:
-  # image: "mlperf/mlcube_mnist:0.0.2"
   image: "matmul:latest"
