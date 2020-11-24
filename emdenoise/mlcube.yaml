@@ -1,10 +1,13 @@
 schema_version: 1.0.0
 schema_type: mlcube_root
 
-name: mnist
+name: emdenoise
 author: MLPerf Best Practices Working Group
 version: 0.1.0
 mlcube_spec_version: 0.1.0
 
 tasks:
+  - 'tasks/download.yaml'
+  - 'tasks/preprocess.yaml'
   - 'tasks/train.yaml'
+  - 'tasks/test.yaml'
