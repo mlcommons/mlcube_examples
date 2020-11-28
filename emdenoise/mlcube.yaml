@@ -1,13 +1,13 @@
 schema_version: 1.0.0
-schema_type: mlcube_root
+schema_type: "mlcube_root"
 
-name: emdenoise
-author: MLPerf Best Practices Working Group
+name: "emdenoise"
+author: "MLCommons Best Practices Working Group"
 version: 0.1.0
 mlcube_spec_version: 0.1.0
 
 tasks:
-  - 'tasks/download.yaml'
-  - 'tasks/preprocess.yaml'
-  - 'tasks/train.yaml'
-  - 'tasks/test.yaml'
+  - "tasks/download.yaml"
+  - "tasks/preprocess.yaml"
+  - "tasks/train.yaml"
+  - "tasks/test.yaml"
