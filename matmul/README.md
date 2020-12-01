@@ -1,6 +1,6 @@
 # Matmul MLCube 
 
-This example multiplies matrix a by matrix b, producing a * b 
+This example multiplies matrix a by matrix b, producing a * b.   
 Both matrices, a and b, must be the same type. 
 Matrix dimensions for matrix a and matrix b are specified by the user in file ./workspace/shapes.yaml  
 The matrix dimentions must be >=2 and the 2 inner dimensions must specify valid matrix multimplication dimensions. 
