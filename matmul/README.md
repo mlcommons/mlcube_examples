@@ -11,12 +11,12 @@ The matrix dimensions must be >=2 and the 2 inner dimensions must specify valid 
 virtualenv -p python3 ./env && source ./env/bin/activate 
 ```
 
-## Install mlcube and mlcube runners
+## Install MLCube and MLCube runners
 ```
 pip install mlcube mlcube-docker mlcube-singularity mlcube-ssh
 ``` 
 
-## Clone MLCube examples and go to Matmul root directory
+## Clone MLCube examples and go to matmul root directory
 ```
 git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/matmul
 ```
