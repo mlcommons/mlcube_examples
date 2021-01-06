@@ -1,12 +1,12 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
-from abc import abstractmethod, ABCMeta
+from abc import (abstractmethod, ABC)
 import time
 import h5py
 import tensorflow as tf
 import numpy as np
 from pathlib import Path
 import horovod.tensorflow.keras as hvd
-from tinydb import TinyDB, Query
+from tinydb import (TinyDB, Query)
 import yaml
 import os
 import logging
@@ -15,6 +15,7 @@ import argparse
 from enum import Enum
 from typing import List
 import wget
+import zipfile
 
 # Height and Width of a single EM Graphene Image
 IMG_SIZE = 256
@@ -29,13 +30,11 @@ class Task(str, Enum):
     Test = 'test'
 
 
-class DataLoader():
+class DataLoader(ABC):
     """Base class for data loaders
 
     This defines the interface that new data loaders must adhere to
     """
-    __metaclass__ = ABCMeta
-
     @property
     @abstractmethod
     def input_shape(self):
@@ -51,57 +50,30 @@ class DataLoader():
         pass
 
 
-def autoencoder(input_shape, learning_rate=0.001, **params):
+def autoencoder(input_shape):
+    def _conv_block(x_, num_filters_: int):
+        x_ = tf.keras.layers.Conv2D(filters=num_filters_, kernel_size=3, activation='relu', padding='same')(x_)
+        x_ = tf.keras.layers.BatchNormalization()(x_)
+        x_ = tf.keras.layers.Conv2D(filters=num_filters_, kernel_size=3, activation='relu', padding='same')(x_)
+        x_ = tf.keras.layers.BatchNormalization()(x_)
+        return x_
+
     skip_layers = []
 
     input_layer = tf.keras.layers.Input(input_shape)
     x = input_layer
-    x = tf.keras.layers.Conv2D(filters=8, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=8, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    skip_layers.append(x)
-    x = tf.keras.layers.MaxPooling2D()(x)
 
-    x = tf.keras.layers.Conv2D(filters=16, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=16, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    skip_layers.append(x)
-    x = tf.keras.layers.MaxPooling2D()(x)
+    for num_filters in (8, 16, 32):
+        x = _conv_block(x, num_filters_=num_filters)
+        skip_layers.append(x)
+        x = tf.keras.layers.MaxPooling2D()(x)
 
-    x = tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    skip_layers.append(x)
-    x = tf.keras.layers.MaxPooling2D()(x)
+    x = _conv_block(x, num_filters_=64)
 
-    x = tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=64, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-
-    x = tf.keras.layers.UpSampling2D()(x)
-    x = tf.keras.layers.Concatenate()([x, skip_layers.pop(-1)])
-    x = tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-
-    x = tf.keras.layers.UpSampling2D()(x)
-    x = tf.keras.layers.Concatenate()([x, skip_layers.pop(-1)])
-    x = tf.keras.layers.Conv2D(filters=16, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=16, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-
-    x = tf.keras.layers.UpSampling2D()(x)
-    x = tf.keras.layers.Concatenate()([x, skip_layers.pop(-1)])
-    x = tf.keras.layers.Conv2D(filters=8, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.Conv2D(filters=8, kernel_size=3, activation='relu', padding='same')(x)
-    x = tf.keras.layers.BatchNormalization()(x)
+    for num_filters in (32, 16, 8):
+        x = tf.keras.layers.UpSampling2D()(x)
+        x = tf.keras.layers.Concatenate()([x, skip_layers.pop(-1)])
+        x = _conv_block(x, num_filters_=num_filters)
 
     x = tf.keras.layers.Conv2D(filters=1, kernel_size=3, activation='linear', padding='same')(x)
 
@@ -111,12 +83,13 @@ def autoencoder(input_shape, learning_rate=0.001, **params):
 
 class EMGrapheneDataset(DataLoader):
 
-    def __init__(self, data_dir, seed=None, batch_size=10, **kwargs):
+    def __init__(self, data_dir, seed=None, batch_size=10):
         self._seed = seed
         self._data_dir = Path(data_dir)
-        self._batch_size = 10
+        self._batch_size = batch_size
 
-    def _load_data(self, path):
+    @staticmethod
+    def _load_data(path):
         path = path.decode()
         with h5py.File(path, "r") as hdf5_file:
             for i in range(len(hdf5_file['images'])):
@@ -125,24 +98,24 @@ class EMGrapheneDataset(DataLoader):
 
     @property
     def input_shape(self):
-        return (IMG_SIZE, IMG_SIZE, 1)
+        return IMG_SIZE, IMG_SIZE, 1
 
     @property
     def output_shape(self):
-        return (IMG_SIZE, IMG_SIZE, 1)
+        return IMG_SIZE, IMG_SIZE, 1
 
     def to_dataset(self):
         types = tf.float32
         shapes = tf.TensorShape([IMG_SIZE, IMG_SIZE, 1])
 
         path = str(self._data_dir / 'graphene_img_noise.h5')
-        noise_dataset = tf.data.Dataset.from_generator(self._load_data,
+        noise_dataset = tf.data.Dataset.from_generator(EMGrapheneDataset._load_data,
                                                        output_types=types,
                                                        output_shapes=shapes,
                                                        args=(path,))
 
         path = str(self._data_dir / 'graphene_img_clean.h5')
-        clean_dataset = tf.data.Dataset.from_generator(self._load_data,
+        clean_dataset = tf.data.Dataset.from_generator(EMGrapheneDataset._load_data,
                                                        output_types=types,
                                                        output_shapes=shapes,
                                                        args=(path,))
@@ -157,9 +130,6 @@ class EMGrapheneDataset(DataLoader):
 class AverageMeter(object):
 
     def __init__(self):
-        self.reset()
-
-    def reset(self):
         self.count = 0
         self.value = 0
         self.last = 0
@@ -172,7 +142,6 @@ class AverageMeter(object):
     def get_value(self):
         if self.count == 0:
             return 0
-
         return self.value / self.count
 
     def get_last(self):
@@ -248,6 +217,7 @@ class TrackingClient:
 class TrackingCallback(tf.keras.callbacks.Callback):
 
     def __init__(self, output_dir, batch_size, warmup_steps=1, log_batch=False):
+        super().__init__()
         self._db = TrackingClient(Path(output_dir) / 'logs.json')
         self._current_step = 0
         self._warmup_steps = warmup_steps
@@ -257,6 +227,12 @@ class TrackingCallback(tf.keras.callbacks.Callback):
         self._predict_meter = AverageMeter()
         self._test_meter = AverageMeter()
         self._log_batch = log_batch
+
+        self._t0 = None
+        self._epoch_begin_time = None
+        self._train_begin_time = None
+        self._test_begin_time = None
+        self._predict_begin_time = None
 
     def on_train_batch_begin(self, batch, logs=None):
         self._t0 = time.time()
@@ -359,13 +335,11 @@ def train(data_dir=None, output_dir=None, model_dir=None, epochs=1, learning_rat
 
     opt = tf.keras.optimizers.Adam(learning_rate=learning_rate, beta_1=beta_1, beta_2=beta_2,
                                    epsilon=epsilon, amsgrad=False, name=optimizer)
-
     opt = hvd.DistributedOptimizer(opt)
 
     loss = tf.keras.losses.MeanSquaredError()
 
     model = autoencoder(dataset.input_shape)
-
     model.compile(loss=loss,
                   optimizer=opt,
                   experimental_run_tf_function=False)
@@ -374,7 +348,6 @@ def train(data_dir=None, output_dir=None, model_dir=None, epochs=1, learning_rat
         hvd.callbacks.BroadcastGlobalVariablesCallback(0),
         hvd.callbacks.MetricAverageCallback(),
     ]
-
     if hvd.rank() == 0:
         # These hooks only need to be called by one instance.
         # Therefore we need to only add them on rank == 0
@@ -396,8 +369,7 @@ def train(data_dir=None, output_dir=None, model_dir=None, epochs=1, learning_rat
         print("models path: ", os.listdir(model_path))
 
 
-def test(data_dir=None, output_dir=None, model_dir=None, global_batch_size=256,
-         log_batch=False):
+def test(data_dir=None, output_dir=None, model_dir=None, global_batch_size=256, log_batch=False):
     hooks = [
         hvd.callbacks.BroadcastGlobalVariablesCallback(0),
         hvd.callbacks.MetricAverageCallback(),
@@ -446,31 +418,16 @@ def download_task(task_args: List[str]) -> None:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
-    parser.add_argument('--output_dir', '--output-dir', type=str, default=None,
-                        help="Output directory.")
     args = parser.parse_args(args=task_args)
-    download(args.data_dir)
 
-
-def download(output_directory):
+    os.makedirs(args.data_dir, exist_ok=True)
     data_url = "https://github.com/vibhatha/data_repo/raw/main/em_denoise/emdenoise_minibatch_v1.zip"
-    data_file_expected_dir = os.path.join(output_directory, 'emdenoise_minibatch_v1.zip')
+    data_file_expected_dir = os.path.join(args.data_dir, 'emdenoise_minibatch_v1.zip')
     if not os.path.exists(data_file_expected_dir):
-        filename = wget.download(data_url, out=output_directory)
-    if not os.path.exists(data_file_expected_dir):
-        raise ValueError(f'Em denoise data not downloaded to: {os.listdir(output_directory)}')
-    else:
-        print(f"File downloaded : {output_directory}/{filename}")
-
-
-def data_process(data_source_dir: str = None, data_dest_dir: str = None) -> None:
-    import zipfile
-    if not os.path.exists(os.path.join(data_source_dir, 'emdenoise_minibatch_v1.zip')):
-        raise ValueError(f'Em denoise data not downloaded to: {os.listdir(data_source_dir)}')
-    file = os.listdir(data_source_dir)[0]
-    with zipfile.ZipFile(os.path.join(data_source_dir, file), "r") as zip_ref:
-        zip_ref.extractall(data_dest_dir)
-    assert len(os.listdir(data_dest_dir)) > 0
+        filename = wget.download(data_url, out=args.data_dir)
+        if not os.path.exists(data_file_expected_dir):
+            raise ValueError(f'Em denoise data not downloaded to: {os.listdir(args.data_dir)}')
+        print(f"File downloaded : {args.data_dir}/{filename}")
 
 
 def preprocess_task(task_args: List[str]) -> None:
@@ -480,10 +437,35 @@ def preprocess_task(task_args: List[str]) -> None:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
+    args = parser.parse_args(args=task_args)
+
+    os.makedirs(args.data_dir, exist_ok=True)
+    data_source_dir, data_dest_dir = args.data_dir, args.data_dir
+    if not os.path.exists(os.path.join(data_source_dir, 'emdenoise_minibatch_v1.zip')):
+        raise ValueError(f'Em denoise data not downloaded to: {os.listdir(data_source_dir)}')
+    file = os.listdir(data_source_dir)[0]
+    with zipfile.ZipFile(os.path.join(data_source_dir, file), "r") as zip_ref:
+        zip_ref.extractall(data_dest_dir)
+    assert len(os.listdir(data_dest_dir)) > 0
+
+
+def parse_ml_args(task_args: List[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
+    parser.add_argument('--model_dir', '--model-dir', type=str, default=None,
+                        help="Model output directory.")
     parser.add_argument('--output_dir', '--output-dir', type=str, default=None,
                         help="Output directory.")
+    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
+                        help="Parameters default values.")
     args = parser.parse_args(args=task_args)
-    data_process(data_source_dir=args.data_dir, data_dest_dir=args.data_dir)
+
+    print("Data Dir : ", args.data_dir)
+    print("Model Dir : ", args.model_dir)
+    print("Output Dir : ", args.output_dir)
+    print("Data Dir files: ", os.listdir(args.data_dir))
+
+    return args
 
 
 def train_task(task_args: List[str]) -> None:
@@ -491,40 +473,21 @@ def train_task(task_args: List[str]) -> None:
     Input parameters:
         --data_dir, --log_dir, --model_dir, --parameters_file
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
-    parser.add_argument('--model_dir', '--model-dir', type=str, default=None,
-                        help="Model output directory.")
-    parser.add_argument('--output_dir', '--output-dir', type=str, default=None,
-                        help="Output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    args = parser.parse_args(args=task_args)
+    args = parse_ml_args(task_args)
 
-    print("Data Dir : ", args.data_dir)
-    print("Model Dir : ", args.model_dir)
-    print("Output Dir : ", args.output_dir)
-
-    print("Data Dir files: ", os.listdir(args.data_dir))
-    # print("Workspace dir : ", os.listdir(data_source_dir))
+    os.makedirs(args.model_dir, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     train_path = os.path.join(args.data_dir, "emdenoise_minibatch_v1", "train")
-
     assert os.path.exists(train_path)
 
     with open(args.parameters_file, 'r') as stream:
         parameters = yaml.load(stream, Loader=yaml.FullLoader)
 
-    epochs = int(parameters.get('epochs', 1))
-    learning_rate = float(parameters.get('learning_rate', 0.01))
-    beta_1 = float(parameters.get('beta_1', 0.9))
-    beta_2 = float(parameters.get('beta_2', 0.999))
-    epsilon = float(parameters.get('epsilon', 1e-07))
-    optimizer = parameters.get('optimizer', 'Adam')
-
-    train(data_dir=train_path, output_dir=args.output_dir, model_dir=args.model_dir, epochs=epochs,
-          learning_rate=learning_rate, beta_1=beta_1, beta_2=beta_2, epsilon=epsilon,
-          optimizer=optimizer)
+    train(data_dir=train_path, output_dir=args.output_dir, model_dir=args.model_dir,
+          epochs=int(parameters.get('epochs', 1)), learning_rate=float(parameters.get('learning_rate', 0.01)),
+          beta_1=float(parameters.get('beta_1', 0.9)), beta_2=float(parameters.get('beta_2', 0.999)),
+          epsilon=float(parameters.get('epsilon', 1e-07)), optimizer=parameters.get('optimizer', 'Adam'))
 
 
 def test_task(task_args: List[str]) -> None:
@@ -532,34 +495,19 @@ def test_task(task_args: List[str]) -> None:
     Input parameters:
         --data_dir, --log_dir, --model_dir, --parameters_file
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
-    parser.add_argument('--model_dir', '--model-dir', type=str, default=None,
-                        help="Model output directory.")
-    parser.add_argument('--output_dir', '--output-dir', type=str, default=None,
-                        help="Output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    args = parser.parse_args(args=task_args)
+    args = parse_ml_args(task_args)
 
-    print("Data Dir : ", args.data_dir)
-    print("Model Dir : ", args.model_dir)
-    print("Output Dir : ", args.output_dir)
-
-    print("Data Dir files: ", os.listdir(args.data_dir))
-    # print("Workspace dir : ", os.listdir(data_source_dir))
+    os.makedirs(args.model_dir, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     test_path = os.path.join(args.data_dir, "emdenoise_minibatch_v1", "test")
-
     assert os.path.exists(test_path)
 
     with open(args.parameters_file, 'r') as stream:
         parameters = yaml.load(stream, Loader=yaml.FullLoader)
 
-    global_batch_size = int(parameters.get('global_batch_size', 256))
-
     test(data_dir=test_path, output_dir=args.output_dir, model_dir=args.model_dir,
-         global_batch_size=global_batch_size, log_batch=True)
+         global_batch_size=int(parameters.get('global_batch_size', 256)), log_batch=True)
 
 
 def main():
@@ -569,11 +517,11 @@ def main():
     # noinspection PyBroadException
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument('mlbox_task', type=str, help="Task for this MLBOX.")
-        parser.add_argument('--log_dir', '--log-dir', type=str, required=True,
-                            help="Logging directory.")
+        parser.add_argument('mlbox_task', type=str, help="Task for this MLCube.")
+        parser.add_argument('--log_dir', '--log-dir', type=str, required=True, help="Logging directory.")
         ml_box_args, task_args = parser.parse_known_args()
 
+        os.makedirs(ml_box_args.log_dir, exist_ok=True)
         logger_config = {
             "version": 1,
             "disable_existing_loggers": True,
