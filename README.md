@@ -1,4 +1,4 @@
-# MLCube examples
+# MLCube™ examples
 
 The machine learning (ML) community has seen an explosive growth and innovation in the last decade. New models emerge 
 on a daily basis, but sharing those models remains an ad-hoc process. Often, when a researcher wants to use a model 
