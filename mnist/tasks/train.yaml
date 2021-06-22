@@ -9,10 +9,13 @@ inputs:
 
         - name: parameters_file
           type: file
+          
+        - name: model_in
+          type: directory
 # Task Outputs
 outputs:
-        - name: log_dir
-          type: directory
+        - name: metrics
+          type: file
 
         - name: model_dir
           type: directory
