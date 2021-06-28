@@ -2,12 +2,14 @@
 
 ## Create and initialize python environment
 ```
-virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker
+virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker tornado
 ```
 
 ## Clone MLCube examples and go to MNIST root directory
 ```
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/mnist_openfl
+git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples
+git fetch origin pull/26/head:feature/openfl && git checkout feature/openfl
+cd ./mnist_openfl
 ```
 
 ## Run MNIST MLCube on a local machine with Docker runner
