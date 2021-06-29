@@ -1,0 +1,15 @@
+schema_type: mlcube_invoke
+schema_version: 1.0.0
+
+task_name: evaluate
+
+input_binding: {}
+
+input_binding:
+        data_dir: $WORKSPACE/data
+        parameters_file: $WORKSPACE/parameters/default.parameters.yaml
+        model_in: $WORKSPACE/model
+
+output_binding:
+        metrics: $WORKSPACE/metrics/evaluate_metrics.json
+        log_dir: $WORKSPACE/evaluate_logs
