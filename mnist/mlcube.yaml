@@ -3,27 +3,13 @@ description: MLCommons MNIST MLCube example
 authors:
   - {name: "Sergey Serebryakov", email: "sergey.serebryakov@hpe.com", org: "Hewlett-Packard Labs"}
 
-
 platform:
-  accelerator_count: 1
-
+  accelerator_count: 0
 
 container:
-  image: mlcommons/mnist:0.0.1
-  build_context: "mnist"
-  build_file: "Dockerfile"
-  # The rest of this section is read from user local config (e.g. $HOME/.mlcube.yaml)
-  docker: docker
-  gpu_args: >-
-    --rm  --gpus=all --net=host --uts=host --ipc=host --ulimit stack=67108864 --ulimit memlock=-1
-    --privileged=true --security-opt seccomp=unconfined
-  env_args:
-    http_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-    https_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-  build_args:
-    http_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-    https_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-
+  image: mlcommons/mnist:0.0.1        # Image name.
+  build_context: "mnist"              # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_file: "Dockerfile"            # Docker file name within docker build context, default is `Dockerfile`.
 
 tasks:
   download:
