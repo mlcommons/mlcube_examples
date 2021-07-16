@@ -1,12 +1,21 @@
-schema_version: 1.0.0
-schema_type: mlcube_root
+name: matmul
+description: MLCommons MatMul MLCube example
+authors:
+  - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
 
-name: hello_world
-author: MLPerf Best Practices Working Group
-version: 0.1.0
-mlcube_spec_version: 0.1.0
+platform:
+  accelerator_count: 0
+
+container:
+  image: mlcommons/hello_world:0.0.1
+  build_context: "hello_world"
 
 tasks:
-  - 'tasks/hello.yaml'
-  - 'tasks/bye.yaml'
-
+  hello:
+    io:
+      - {name: name, type: file, io: input, default: $WORKSPACE/names/alice.txt}
+      - {name: chat, type: file, io: output, default: $WORKSPACE/chats/chat_with_alice.txt}
+  bye:
+    io:
+      - {name: name, type: file, io: input, default: $WORKSPACE/names/alice.txt}
+      - {name: chat, type: file, io: output, default: $WORKSPACE/chats/chat_with_alice.txt}

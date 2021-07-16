@@ -1,13 +1,36 @@
-schema_version: 1.0.0
-schema_type: "mlcube_root"
+name: emdenoise
+description: MLCommons EMDenoise MLCube example
+authors:
+  - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
 
-name: "emdenoise"
-author: "MLCommons Best Practices Working Group"
-version: 0.1.0
-mlcube_spec_version: 0.1.0
+platform:
+  accelerator_count: 0
+
+container:
+  image: mlcommons/sciml_em_denoise:0.0.1        # Image name.
+  build_context: "emdenoise"                     # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
 
 tasks:
-  - "tasks/download.yaml"
-  - "tasks/preprocess.yaml"
-  - "tasks/train.yaml"
-  - "tasks/test.yaml"
+  download:
+    io:
+      - {name: raw_data_dir, type: directory, io: output, default: $WORKSPACE/raw_data}
+      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+  preprocess:
+    io:
+      - {name: raw_data_dir, type: directory, io: input, default: $WORKSPACE/raw_data}
+      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
+      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+  train:
+    io:
+      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
+      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
+      - {name: model_dir, type: directory, io: output, default: $WORKSPACE/model}
+      - {name: output_dir, type: directory, io: output, default: $WORKSPACE/output}
+      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+  test:
+    io:
+      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
+      - {name: model_dir, type: directory, io: input, default: $WORKSPACE/model}
+      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
+      - {name: output_dir, type: directory, io: output, default: $WORKSPACE/output}
+      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
