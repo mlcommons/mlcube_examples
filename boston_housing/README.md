@@ -33,13 +33,12 @@ The most important thing that we need to remember about these scripts are the in
 
 ## MLCube scructure
 
-We'll need some files for MLCube, first we'll need to create a folder called **mlcube** in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place but some of them are empty for you to define their content)
+We'll need a couple of files for MLCube, first we'll need to create a folder called **mlcube** in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place)
 
 ```
 ├── mlcube
-│   ├── .mlcube.yaml
-│   ├── platforms
-│   │   └── docker.yaml
+│   ├── mlcube.yaml
+│   ├── mlcube_cli.py
 │   └── workspace
 │       └── parameters.yaml
 └── project
@@ -104,7 +103,24 @@ process.wait()
 
 In this tutorial we already have a shell script containing the steps to run the train task, the file is: **project/run_and_time.sh**, please take a look and study its content.
 
-### MLCube handler Python file
+
+### MLCube Python CLI file
+
+The **mlcube/mlcube_cli.py** file simulates MLCube CLI. It is temporary stored here, and is part of MLCube library. The only command avaibale to execute is `run`, and the possible arguments are:
+
+  --mlcube      TEXT    Path to MLCube directory, default is current.
+  --platform    TEXT    Platform to run MLCube, default is docker/podman.
+  --task        TEXT    MLCube task name to run, default is `main`.
+  --workspace   TEXT    Workspace path, default is `workspace` within MLCube folder
+
+Example:
+
+```
+python mlcube_cli.py run --mlcube ./ --task train --platform docker
+```
+
+
+### MLCube Python entrypoint file
 
 At this point we know how to execute the tasks sripts from Python code, now we can create a file that contains the definition on how to run each task.
 
@@ -128,9 +144,8 @@ At this point our solution folder structure should look like this:
 
 ```
 ├── mlcube
-│   ├── .mlcube.yaml
-│   ├── platforms
-│   │   └── docker.yaml
+│   ├── mlcube.yaml
+│   ├── mlcube_cli.py
 │   └── workspace
 │       └── parameters.yaml
 └── project
@@ -160,7 +175,7 @@ This file is already provided, please take a look and study its content.
 
 ### MLCube task definition file
 
-The file located in **mlcube/.mlcube.yaml** contains the definition of all the tasks and their parameters.
+The file located in **mlcube/mlcube.yaml** contains the definition of all the tasks and their parameters.
 
 This file is already provided, please take a look and study its content.
 
@@ -171,23 +186,15 @@ With this file we have finished the packing of the project into MLCube! Now we c
 ```Python
 # Create Python environment 
 virtualenv -p python3 ./env && source ./env/bin/activate
-
 # Install MLCube and MLCube docker runner from GitHub repository (normally, users will just run `pip install mlcube mlcube_docker`)
-git clone https://github.com/mlcommons/mlcube && cd ./mlcube
-cd ./mlcube && python setup.py bdist_wheel  && pip install --force-reinstall ./dist/mlcube-* && cd ..
-cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --force-reinstall --no-deps ./dist/mlcube_docker-* && cd ../../..
-python3 -m pip install tornado
+git clone https://github.com/sergey-serebryakov/mlbox.git && cd mlbox && git checkout feature/configV2
+cd ./runners/mlcube_docker && export PYTHONPATH=$(pwd)
+cd ../../ && pip install -r mlcube/requirements.txt && pip install omegaconf && cd ../
 
 # Fetch the boston housing example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
 git fetch origin pull/27/head:feature/boston_housing && git checkout feature/boston_housing
-cd ./boston_housing/project
-
-# Build MLCube docker image.
-docker build . -t mlcommons/boston_housing:0.0.1 -f Dockerfile
-
-# Show tasks implemented in this MLCube.
-cd ../mlcube && mlcube describe
+cd ./boston_housing/mlcube
 ```
 
 ### Dataset
@@ -204,13 +211,13 @@ The [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bosto
 ```
 # Download Boston housing dataset. Default path = /workspace/data
 # To override it, use --data_dir=DATA_DIR
-mlcube run --task download_data --platform docker
+python mlcube_cli.py run --task download_data
 
 # Preprocess Boston housing dataset, this will convert raw .txt data to .csv format
 # It will use the DATA_DIR path defined in the previous step
-mlcube run --task preprocess_data --platform docker
+python mlcube_cli.py run --task preprocess_data
 
 # Run training.
 # Parameters to override: --dataset_file_path=DATASET_FILE_PATH --parameters_file=PATH_TO_TRAINING_PARAMS
-mlcube run --task train --platform docker
+python mlcube_cli.py run --task train
 ```
