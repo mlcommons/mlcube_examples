@@ -70,16 +70,14 @@ def download(task_args: List[str]) -> None:
 def train(task_args: List[str]) -> None:
     """ Task: train.
     Input parameters:
-        --data_dir, --log_dir, --model_dir, --parameters_file
+        --data_dir, --log_dir, --model_in, --model_dir, --parameters_file, --metrics
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
-    parser.add_argument('--model_in', '--model-in', type=str, default=None, help="Model output directory.")
+    parser.add_argument('--model_in', '--model-in', type=str, default=None, help="Model input directory.")
     parser.add_argument('--model_dir', '--model-dir', type=str, default=None, help="Model output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    parser.add_argument('--metrics', '--metrics', type=str, default=None,
-                        help="Parameters default values.")
+    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None, help="Parameters default values.")
+    parser.add_argument('--metrics', '--metrics', type=str, default=None, help="Metrics output file.")
 
     args = parser.parse_args(args=task_args)
 
@@ -97,9 +95,11 @@ def train(task_args: List[str]) -> None:
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     
-    if args.model_in != '' and len(os.listdir(args.model_in)) != 0:
-        # Load from checkpoint; TODO confirm this API
-        model = tf.keras.models.load_model(os.path.join(args.model_in, 'mnist_model'))
+    if args.model_in != '':
+        model_path = os.path.join(args.model_in, 'mnist_model')
+        if (os.path.isfile(model_path)):
+            # Load from checkpoint; TODO confirm this API
+            model = tf.keras.models.load_model(model_path)
     else:
         # if no model given on CLI, create a new one
         model = tf.keras.models.Sequential([
@@ -142,15 +142,13 @@ def train(task_args: List[str]) -> None:
 def evaluate(task_args: List[str]) -> None:
     """ Task: train.
     Input parameters:
-        --data_dir, --log_dir, --model_dir, --parameters_file
+        --data_dir, --log_dir, --model_in, --parameters_file, --metrics
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
-    parser.add_argument('--model_in', '--model-in', type=str, default=None, help="Model output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    parser.add_argument('--metrics', '--metrics', type=str, default=None,
-                        help="Parameters default values.")
+    parser.add_argument('--model_in', '--model-in', type=str, default=None, help="Model input directory.")
+    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None, help="Parameters default values.")
+    parser.add_argument('--metrics', '--metrics', type=str, default=None, help="Metrics output file.")
     args = parser.parse_args(args=task_args)
 
     with open(args.parameters_file, 'r') as stream:
