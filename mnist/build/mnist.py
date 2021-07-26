@@ -25,12 +25,7 @@ class Task(str, Enum):
     DownloadData = 'download'
     Train = 'train'
 
-
-def create_directory(path: str) -> None:
-    if not os.path.exists(path):
-        os.makedirs(path, exist_ok=True)
-
-
+    
 def download(task_args: List[str]) -> None:
     """ Task: download.
     Input parameters:
