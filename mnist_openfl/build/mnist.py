@@ -95,11 +95,9 @@ def train(task_args: List[str]) -> None:
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     
-    if args.model_in != '':
-        model_path = os.path.join(args.model_in, 'mnist_model')
-        if (os.path.isfile(model_path)):
-            # Load from checkpoint; TODO confirm this API
-            model = tf.keras.models.load_model(model_path)
+    if args.model_in != '' and len(os.listdir(args.model_in)) != 0:
+        # Load from checkpoint; TODO confirm this API
+        model = tf.keras.models.load_model(os.path.join(args.model_in, 'mnist_model'))
     else:
         # if no model given on CLI, create a new one
         model = tf.keras.models.Sequential([
