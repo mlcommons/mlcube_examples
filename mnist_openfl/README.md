@@ -29,7 +29,7 @@ python mlcube_cli.py run --task evaluate
 Parameters defined at **mlcube.yaml** could be overridden using: `--param=input`, example:
 
 ```
-python mlcube_cli.py run --task download --data_dir=path_to_custom_dir
+python mlcube_cli.py run --task download --data_dir=absolute_path_to_custom_dir
 ```
 
 By default, at the end of the train task, Mnist model will be saved in `workspace/model`.
