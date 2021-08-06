@@ -8,7 +8,7 @@ platform:
 
 container:
   # Image name.
-  image: mlperf/mlcube_mnist:0.0.1
+  image: mlcommons/mnist_fl:0.0.1
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
   build_context: "build"
   # Docker file name within docker build context, default is `Dockerfile`.
@@ -16,37 +16,37 @@ container:
 
 tasks:
   download:
-  # Download boston housing dataset
+  # Download mnist dataset
     io:
       # Directory where dataset will be saved.
       - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
-      # Directory where dataset will be saved.
+      # Path where task logs will be saved.
       - {name: log_dir, type: file, io: output, default: $WORKSPACE/download_logs}
   train:
-  # Preprocess dataset
+  # Train model
     io:
       # Same directory location where dataset was downloaded
       - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      # Same directory location where dataset was downloaded
+      # Yaml file with default training parameters.
       - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      # Same directory location where dataset was downloaded
+      # Input model for continue training
       - {name: model_in, type: directory, io: input, default: $WORKSPACE/model}
-      # Same directory location where dataset was downloaded
+      # Path where task logs will be saved.
       - {name: log_dir, type: file, io: output, default: $WORKSPACE/train_logs}
-      # Same directory location where dataset was downloaded
+      # Path where task metrics will be saved.
       - {name: metrics, type: file, io: output, default: $WORKSPACE/metrics/train_metrics.json}
-      # Same directory location where dataset was downloaded
+      # Directory where new model will be saved
       - {name: model_dir, type: directory, io: output, default: $WORKSPACE/model}
   evaluate:
-  # Train gradient boosting regressor model
+  # evaluate model
     io:
       # Same directory location where dataset was downloaded
       - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      # Same directory location where dataset was downloaded
+      # Yaml file with default parameters.
       - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      # Same directory location where dataset was downloaded
+      # Input model directory path that will be used for evaluation
       - {name: model_in, type: directory, io: input, default: $WORKSPACE/model}
-      # Same directory location where dataset was downloaded
+      # Path where task logs will be saved.
       - {name: log_dir, type: file, io: output, default: $WORKSPACE/evaluate_logs}
-      # Same directory location where dataset was downloaded
+      # Path where task metrics will be saved.
       - {name: metrics, type: file, io: output, default: $WORKSPACE/metrics/evaluate_metrics.json}
