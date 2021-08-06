@@ -6,16 +6,19 @@ authors:
 platform:
   accelerator_count: 0
 
-container:
+docker:
   image: mlcommons/hello_world:0.0.1
-  build_context: "hello_world"
 
 tasks:
   hello:
-    io:
-      - {name: name, type: file, io: input, default: $WORKSPACE/names/alice.txt}
-      - {name: chat, type: file, io: output, default: $WORKSPACE/chats/chat_with_alice.txt}
+    parameters:
+      inputs:
+        name: {type: file, default: names/alice.txt}
+      outputs:
+        chat: {type: file, default: chats/chat_with_alice.txt}
   bye:
-    io:
-      - {name: name, type: file, io: input, default: $WORKSPACE/names/alice.txt}
-      - {name: chat, type: file, io: output, default: $WORKSPACE/chats/chat_with_alice.txt}
+    parameters:
+      inputs:
+        name: {type: file, default: names/alice.txt}
+      outputs:
+        chat: {type: file, default: chats/chat_with_alice.txt}

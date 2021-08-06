@@ -6,12 +6,13 @@ authors:
 platform:
   accelerator_count: 0
 
-container:
+docker:
   image: mlcommons/matmul:0.0.1
-  build_context: "matmul"
 
 tasks:
   matmul:
-    io:
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/shapes.yaml}
-      - {name: output_file, type: file, io: output, default: $WORKSPACE/matmul.txt}
+    parameters:
+      inputs:
+        parameters_file: {type: file, default: shapes.yaml}
+      outputs:
+        output_file: {type: file, default: matmul.txt}

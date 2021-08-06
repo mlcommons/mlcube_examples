@@ -1,24 +1,32 @@
 name: mnist
 description: MLCommons MNIST MLCube example
 authors:
-  - {name: "Sergey Serebryakov", email: "sergey.serebryakov@hpe.com", org: "Hewlett-Packard Labs"}
+  - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
 
 platform:
   accelerator_count: 0
+  accelerator_maker: NVIDIA
+  accelerator_model: A100-80GB
+  host_memory_gb: 40
+  need_internet_access: True
+  host_disk_space_gb: 100
 
-container:
-  image: mlcommons/mnist:0.0.1        # Image name.
-  build_context: "mnist"              # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
-  build_file: "Dockerfile"            # Docker file name within docker build context, default is `Dockerfile`.
+docker:
+  image: mlcommons/mnist:0.0.1
 
 tasks:
   download:
-    io:
-      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+    parameters:
+      inputs:
+        data_config: {type: file, default: data.yaml}
+      outputs:
+        data_dir: {type: directory, default: data}
+        log_dir: {type: directory, default: logs}
   train:
-    io:
-      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
-      - {name: model_dir, type: directory, io: output, default: $WORKSPACE/model}
+    parameters:
+      inputs:
+        data_dir: {type: directory, default: data}
+        train_config: {type: file, default: train.yaml}
+      outputs:
+        log_dir: {type: directory, default: logs}
+        model_dir: {type: directory, default: model}

@@ -6,31 +6,38 @@ authors:
 platform:
   accelerator_count: 0
 
-container:
-  image: mlcommons/sciml_em_denoise:0.0.1        # Image name.
-  build_context: "emdenoise"                     # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+docker:
+  image: mlcommons/sciml_em_denoise:0.0.1
 
 tasks:
   download:
-    io:
-      - {name: raw_data_dir, type: directory, io: output, default: $WORKSPACE/raw_data}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+    parameters:
+      inputs: {}
+      outputs:
+        raw_data_dir: {type: directory, default: raw_data}
+        log_dir: {type: directory, default: logs}
   preprocess:
-    io:
-      - {name: raw_data_dir, type: directory, io: input, default: $WORKSPACE/raw_data}
-      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+    parameters:
+      inputs:
+        raw_data_dir: {type: directory, default: raw_data}
+      outputs:
+        data_dir: {type: directory,default: data}
+        log_dir: {type: directory, default: logs}
   train:
-    io:
-      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      - {name: model_dir, type: directory, io: output, default: $WORKSPACE/model}
-      - {name: output_dir, type: directory, io: output, default: $WORKSPACE/output}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+    parameters:
+      inputs:
+        data_dir: {type: directory, default: data}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+      outputs:
+        model_dir: {type: directory, default: model}
+        output_dir: {type: directory, default: output}
+        log_dir: {type: directory, default: logs}
   test:
-    io:
-      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      - {name: model_dir, type: directory, io: input, default: $WORKSPACE/model}
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      - {name: output_dir, type: directory, io: output, default: $WORKSPACE/output}
-      - {name: log_dir, type: directory, io: output, default: $WORKSPACE/logs}
+    parameters:
+      inputs:
+        data_dir: {type: directory, default: data}
+        model_dir: {type: directory, default: model}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+      outputs:
+        output_dir: {type: directory, default: output}
+        log_dir: {type: directory, default: logs}

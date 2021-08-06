@@ -1,6 +1,6 @@
 # Copy this file to ${HOME} and change it accordingly. This file contains a configuration for docker runner common for
 # all MLCube. This file is merged with a concrete MLCube configuration file.
-container:
+docker:
   # Executable (docker, podman, sudo docker ...).
   docker: docker
   # Build a docker image every time a task is executed ("docker build ..." with cache).
@@ -15,9 +15,9 @@ container:
     --privileged=true --security-opt seccomp=unconfined
   # Environmental variables for run phase (-e NAME=VALUE).
   env_args:
-    http_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-    https_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
+    http_proxy: "${oc.env:http_proxy}"
+    https_proxy: "${oc.env:https_proxy}"
   # Arguments for build phase (--build-args NAME=VALUE).
   build_args:
-    http_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
-    https_proxy: "http://web-proxy-pa.labs.hpecorp.net:8088"
+    http_proxy: "${oc.env:http_proxy}"
+    https_proxy: "${oc.env:http_proxy}"

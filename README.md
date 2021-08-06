@@ -30,5 +30,3 @@ This repository contains a number of MLCube examples that can run in different e
    for Electron Microscopy Benchmark. This MLCube can only run the Docker container.
    The [README](./emdenoise/README.md) file provides instructions on how to run it.
 4. [Matmul](./matmul) Matmul performs a matrix multiply. 
-
-
