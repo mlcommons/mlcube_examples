@@ -12,7 +12,5 @@ docker:
 tasks:
   matmul:
     parameters:
-      inputs:
-        parameters_file: {type: file, default: shapes.yaml}
-      outputs:
-        output_file: {type: file, default: matmul.txt}
+      inputs: {parameters_file: shapes.yaml}
+      outputs: {output_file: {type: file, default: matmul.txt}}

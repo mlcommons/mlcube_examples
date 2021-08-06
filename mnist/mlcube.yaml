@@ -17,16 +17,9 @@ docker:
 tasks:
   download:
     parameters:
-      inputs:
-        data_config: {type: file, default: data.yaml}
-      outputs:
-        data_dir: {type: directory, default: data}
-        log_dir: {type: directory, default: logs}
+      inputs: {data_config: data.yaml}
+      outputs: {data_dir: data/, log_dir: logs/}
   train:
     parameters:
-      inputs:
-        data_dir: {type: directory, default: data}
-        train_config: {type: file, default: train.yaml}
-      outputs:
-        log_dir: {type: directory, default: logs}
-        model_dir: {type: directory, default: model}
+      inputs: {data_dir: data/, train_config: train.yaml}
+      outputs: {log_dir: logs/, model_dir: model/}

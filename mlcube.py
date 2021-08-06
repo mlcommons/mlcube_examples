@@ -14,6 +14,15 @@ logger = logging.getLogger(__name__)
 class MLCubeConfig(object):
 
     @staticmethod
+    def ensure_values_exist(config: DictConfig, keys: t.Union[t.Text, t.List], constructor: t.Callable) -> t.List:
+        if isinstance(keys, str):
+            keys = [keys]
+        for key in keys:
+            if config.get(key, None) is None:
+                config[key] = constructor()
+        return [config[key] for key in keys]
+
+    @staticmethod
     def get_uri(value: t.Text) -> t.Text:
         if value.startswith('storage:'):
             raise ValueError(f"Storage schema is not yet supported")
@@ -82,23 +91,47 @@ class MLCubeConfig(object):
             except (IsADirectoryError, FileNotFoundError):
                 logger.warning("Global configuration (%s) not loaded.", uri)
 
-        # If users do not provide default values for parameters, add them. Also, override values from task_cli_args.
-        def _update_params(_params: DictConfig) -> None:
-            for _param_name, _param_def in _params.items():
-                # Get value either in this order: CLI -> param_default -> param_name
-                _param_def['default'] = task_cli_args.get(_param_name, _param_def.get('default', _param_name))
-                # Resolve path if it's relative (meaning it's relative to workspace directory.)
-                # This should be done in a runner (for instance, this MLCube can run someplace else on a remote host).
-                # _param_def.default = os.path.abspath(os.path.join(mlcube_config.runtime.workspace,
-                #                                                   _param_def.default))
+        for task_name in mlcube_config.tasks.keys():
+            [task] = MLCubeConfig.ensure_values_exist(mlcube_config.tasks, task_name, dict)
+            [parameters] = MLCubeConfig.ensure_values_exist(task, 'parameters', dict)
+            [inputs, outputs] = MLCubeConfig.ensure_values_exist(parameters, ['inputs', 'outputs'], dict)
 
-        for _, task in mlcube_config.tasks.items():
-            _update_params(task.parameters.get('inputs', {}))
-            _update_params(task.parameters.get('outputs', {}))
+            MLCubeConfig.check_parameters(inputs, 'input', task_cli_args)
+            MLCubeConfig.check_parameters(outputs, 'output', task_cli_args)
 
         if resolve:
             OmegaConf.resolve(mlcube_config)
         return mlcube_config
+
+    @staticmethod
+    def check_parameters(parameters: DictConfig, io: t.Text, task_cli_args: t.Dict) -> None:
+        """ Check that task parameters are defined according to MLCube schema.
+        Args:
+            parameters: Task parameters (`inputs` or `outputs`).
+            io: `input` or `output`.
+            task_cli_args: Task parameters from command line.
+        This function does not set `type` of parameters (if not present) in all cases.
+        """
+        for name in parameters.keys():
+            # The `_param_name` is anyway there, so check it's not None.
+            [param_def] = MLCubeConfig.ensure_values_exist(parameters, name, dict)
+            # Deal with the case when value is a string (default value).
+            if isinstance(param_def, str):
+                parameters[name] = {'default': param_def}
+                param_def = parameters[name]
+            # If `default` key is not present, use parameter name as value.
+            _ = MLCubeConfig.ensure_values_exist(param_def, 'default', lambda: name)
+            # Finally, see if there is value on a command line
+            param_def.default = task_cli_args.get(name, param_def.default)
+            # It's here probably temporarily. Does not make too much sense to check for input types, since inputs
+            # might not be in the workspace yet (both independent and dependent).
+            _ = MLCubeConfig.ensure_values_exist(param_def, 'type', lambda: 'unknown')
+            if io == 'output' and param_def.type == 'unknown' and param_def.default.endswith(os.sep):
+                param_def.type = 'directory'
+            # Resolve path if it's relative (meaning it's relative to workspace directory.)
+            # This should be done in a runner (for instance, this MLCube can run someplace else on a remote host).
+            # _param_def.default = os.path.abspath(os.path.join(mlcube_config.runtime.workspace,
+            #                                                   _param_def.default))
 
 
 class CliParser(object):
