@@ -7,7 +7,8 @@ virtualenv -p python3 ./env && source ./env/bin/activate
 
 # Install MLCube and MLCube docker runner from GitHub repository (normally, users will just run `pip install mlcube mlcube_docker`)
 git clone https://github.com/sergey-serebryakov/mlbox.git && cd mlbox && git checkout feature/configV2
-cd ./runners/mlcube_docker && export PYTHONPATH=$(pwd)
+git checkout a094eecb48abf8dab21139604e1d8d598dfcaf6d && cd ./runners/mlcube_docker
+export PYTHONPATH=$(pwd)
 cd ../../ && pip install -r mlcube/requirements.txt && pip install omegaconf && cd ../
 ```
 
