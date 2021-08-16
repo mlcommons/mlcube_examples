@@ -6,7 +6,7 @@ authors:
 platform:
   accelerator_count: 0
 
-container:
+docker:
   # Image name.
   image: mlcommons/mnist_fl:0.0.1
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
@@ -17,36 +17,15 @@ container:
 tasks:
   download:
   # Download mnist dataset
-    io:
-      # Directory where dataset will be saved.
-      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
-      # Path where task logs will be saved.
-      - {name: log_dir, type: file, io: output, default: $WORKSPACE/download_logs}
+    parameters:
+      outputs: {data_dir: data/, log_dir: download_logs/}
   train:
   # Train model
-    io:
-      # Same directory location where dataset was downloaded
-      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      # Yaml file with default training parameters.
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      # Input model for continue training
-      - {name: model_in, type: directory, io: input, default: $WORKSPACE/model}
-      # Path where task logs will be saved.
-      - {name: log_dir, type: file, io: output, default: $WORKSPACE/train_logs}
-      # Path where task metrics will be saved.
-      - {name: metrics, type: file, io: output, default: $WORKSPACE/metrics/train_metrics.json}
-      # Directory where new model will be saved
-      - {name: model_dir, type: directory, io: output, default: $WORKSPACE/model}
+    parameters:
+      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
+      outputs: {log_dir: train_logs/, metrics: {type: file, default: metrics/train_metrics.json}, model_dir: model/}
   evaluate:
   # evaluate model
-    io:
-      # Same directory location where dataset was downloaded
-      - {name: data_dir, type: directory, io: input, default: $WORKSPACE/data}
-      # Yaml file with default parameters.
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters/default.parameters.yaml}
-      # Input model directory path that will be used for evaluation
-      - {name: model_in, type: directory, io: input, default: $WORKSPACE/model}
-      # Path where task logs will be saved.
-      - {name: log_dir, type: file, io: output, default: $WORKSPACE/evaluate_logs}
-      # Path where task metrics will be saved.
-      - {name: metrics, type: file, io: output, default: $WORKSPACE/metrics/evaluate_metrics.json}
+    parameters:
+      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
+      outputs: {log_dir: evaluate_logs/, metrics: {type: file, default: metrics/evaluate_metrics.json}}
