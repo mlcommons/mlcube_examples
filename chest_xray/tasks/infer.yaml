@@ -1,0 +1,12 @@
+# Schema
+schema_version: 1.0.0
+schema_type: mlcube_task
+
+# Task Inputs
+# TODO: check if this is correct or we need an input
+inputs: []
+
+# Task Outputs
+outputs:
+  - name: output_file
+    type: file
