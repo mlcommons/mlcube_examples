@@ -26,10 +26,10 @@ mlcube run --task train
 mlcube run --task evaluate
 ```
 
-Parameters defined in **mlcube.yaml** can be overridden using: `--param=input`, example:
+Parameters defined in **mlcube.yaml** can be overridden using: `param=input`, example:
 
 ```
-python mlcube_cli.py run --task download --data_dir=path_to_custom_dir
+python mlcube_cli.py run --task download data_dir=path_to_custom_dir
 ```
 
 We are targeting pull-type installation, so MLCubes should be available on docker hub. If not, try this:
