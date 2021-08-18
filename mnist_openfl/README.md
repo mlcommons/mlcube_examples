@@ -1,4 +1,4 @@
-# MLCube + OpenFL: Mnist example
+# MLCube + OpenFL: Mnist example - Tensorflow
 
 ### Project setup
 ```Python
