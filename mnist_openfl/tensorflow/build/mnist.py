@@ -92,13 +92,12 @@ def train(task_args: List[str]) -> None:
     dataset_file = os.path.join(args.data_dir, 'mnist.npz')
     with np.load(dataset_file, allow_pickle=True) as f:
         x_train, y_train = f['x_train'], f['y_train']
-        x_test, y_test = f['x_test'], f['y_test']
-    x_train, x_test = x_train / 255.0, x_test / 255.0
+    x_train = x_train / 255.0
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     
     if args.model_in != '' and len(os.listdir(args.model_in)) != 0:
-        # Load from checkpoint; TODO confirm this API
+        # Load from checkpoint;
         model = tf.keras.models.load_model(os.path.join(args.model_in, 'mnist_model'))
     else:
         # if no model given on CLI, create a new one
@@ -159,9 +158,8 @@ def evaluate(task_args: List[str]) -> None:
 
     dataset_file = os.path.join(args.data_dir, 'mnist.npz')
     with np.load(dataset_file, allow_pickle=True) as f:
-        x_train, y_train = f['x_train'], f['y_train']
         x_test, y_test = f['x_test'], f['y_test']
-    x_train, x_test = x_train / 255.0, x_test / 255.0
+    x_test = x_test / 255.0
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     model = tf.keras.models.load_model(os.path.join(args.model_in, 'mnist_model'))
