@@ -8,7 +8,7 @@ platform:
 
 docker:
   # Image name.
-  image: mlcommons/mnist_fl:0.0.1
+  image: mlcommons/mnist_fl_tensorflow:0.0.1
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
   build_context: "build"
   # Docker file name within docker build context, default is `Dockerfile`.
