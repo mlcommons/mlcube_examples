@@ -4,30 +4,33 @@ Disable GPUs - not all nodes used for testing have GPUs
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-import sys
-import yaml
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import argparse
 import json
-import os
 import logging
 import logging.config
-import argparse
+import os
+import sys
 from enum import Enum
 from typing import List
-import wget
+
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import TensorDataset, DataLoader
-
+import wget
+import yaml
+from torch.utils.data import DataLoader, TensorDataset
 
 logger = logging.getLogger(__name__)
 
 
 class Net(nn.Module):
+    """Pytorch model class"""
+
     def __init__(self):
         super(Net, self).__init__()
         self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
@@ -47,30 +50,30 @@ class Net(nn.Module):
         return x
 
 
-def test(model, data_loader):
+def evaluate_model(model, data_loader):
+    """Evaluate model on input data"""
     model.eval()
-    test_loss = 0
+    loss_value = 0
     correct = 0
     ce_loss = nn.CrossEntropyLoss()
     with torch.no_grad():
         for data, target in data_loader:
             output = model(data)
-            test_loss += ce_loss(output, target).item() * data.size(0)
+            loss_value += ce_loss(output, target).item() * data.size(0)
             pred = output.data.max(1, keepdim=True)[1]
             correct += pred.eq(target.data.view_as(pred)).sum()
-    test_loss /= len(data_loader.sampler)
-    print('\nLoss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
-        test_loss, correct, len(data_loader.dataset),
-        100. * correct / len(data_loader.dataset)))
+    loss_value /= len(data_loader.sampler)
     accuracy = correct / len(data_loader.dataset)
-    return {"loss": test_loss, "accuracy": accuracy.item()}
+    return {"loss": loss_value, "accuracy": accuracy.item()}
 
 
-def train_loop(n_epochs, model, optimizer, train_loader, log_interval, save_path):
+def train_loop(n_epochs, model, optimizer, train_loader, log_interval):
+    """Train model on input data"""
     model.train()
     train_loss = 0.0
     ce_loss = nn.CrossEntropyLoss()
     for epoch in range(1, n_epochs + 1):
+        print(f"\nEpoch {epoch}/{n_epochs}")
         for batch_idx, (data, target) in enumerate(train_loader):
             optimizer.zero_grad()
             output = model(data)
@@ -79,13 +82,12 @@ def train_loop(n_epochs, model, optimizer, train_loader, log_interval, save_path
             optimizer.step()
             train_loss += loss.item() * data.size(0)  # update training loss
             if batch_idx % log_interval == 0 or batch_idx + 1 == len(train_loader):
-                message = 'Train Epoch: {}/{} [{}/{} ({:.0f}%)]    Loss: {:.6f}'.format(
-                    epoch, n_epochs, batch_idx * len(data), len(train_loader.dataset),
+                message = '[{}/{} ({:.0f}%)]    Loss: {:.6f}'.format(
+                    batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), loss.item())
                 sys.stdout.write("\r" + message)
                 sys.stdout.flush()
-        print("")
-        
+
 
 def create_directory(path: str) -> None:
     if not os.path.exists(path):
@@ -101,11 +103,12 @@ def bar_custom(current, total, width=80):
 
 
 class Task(str, Enum):
+    """Define tasks"""
     DownloadData = 'download'
     Train = 'train'
     Evaluate = 'evaluate'
-    
-    
+
+
 def download(task_args: List[str]) -> None:
     """ Task: download.
     Input parameters:
@@ -131,8 +134,10 @@ def download(task_args: List[str]) -> None:
             "MNIST data has already been download (file exists: %s)", data_file)
         return
 
+    print("\nDownloading dataset...")
     data_file = wget.download(
         'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz', data_file, bar=bar_custom)
+    print("\nMNIST dataset has been downloaded.")
 
     if not os.path.isfile(data_file):
         raise ValueError(
@@ -188,9 +193,9 @@ def train(task_args: List[str]) -> None:
 
     logger.info("Model has been built.")
 
+    print("\nTraining model...")
     n_epochs = parameters.get('epochs', 5)
-    train_loop(n_epochs, model, optimizer,
-                         train_loader, 50, args.model_dir)
+    train_loop(n_epochs, model, optimizer, train_loader, 50)
 
     logger.info("Model has been trained.")
 
@@ -200,11 +205,13 @@ def train(task_args: List[str]) -> None:
         args.model_dir, 'optimizer.pth'))
     logger.info("Model has been saved.")
 
-    metrics = test(model, train_loader)
+    metrics = evaluate_model(model, train_loader)
+    print('\nTraining metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%'.format(
+        metrics["loss"], 100 * metrics["accuracy"]))
 
     with open(args.metrics, 'w') as f:
         data_json = {'loss': str(metrics["loss"]),
-                    'accuracy': str(metrics["accuracy"])}
+                     'accuracy': str(metrics["accuracy"])}
         json.dump(data_json, f)
 
 
@@ -244,11 +251,14 @@ def evaluate(task_args: List[str]) -> None:
     model_path = os.path.join(args.model_in, 'model.pth')
     model.load_state_dict(torch.load(model_path))
 
-    metrics = test(model, eval_loader)
+    print("\nEvaluating model...")
+    metrics = evaluate_model(model, eval_loader)
+    print('Evaluate metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%'.format(
+        metrics["loss"], 100 * metrics["accuracy"]))
 
     with open(args.metrics, 'w') as f:
         data_json = {'loss': str(metrics["loss"]),
-                    'accuracy': str(metrics["accuracy"])}
+                     'accuracy': str(metrics["accuracy"])}
         json.dump(data_json, f)
 
     logger.info("Model has been evaluated.")
