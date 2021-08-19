@@ -4,20 +4,23 @@ Disable GPUs - not all nodes used for testing have GPUs
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 """
 
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-import yaml
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import argparse
 import json
-import os
 import logging
 import logging.config
-import argparse
+import os
 from enum import Enum
 from typing import List
+
 import numpy as np
 import tensorflow as tf
+import yaml
 from tensorflow_core.python.keras.utils.data_utils import get_file
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # Remove warning messages
 
 logger = logging.getLogger(__name__)
 
