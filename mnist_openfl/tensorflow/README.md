@@ -38,13 +38,13 @@ mlcube run ... -Pdocker.build_strategy=auto
 Parameters defined in **mlcube.yaml** can be overridden using: `param=input`, example:
 
 ```bash
-python mlcube run --task=download data_dir=absolute_path_to_custom_dir
+mlcube run --task=download data_dir=absolute_path_to_custom_dir
 ```
 
 Also, users can override the workspace directory by using:
 
 ```bash
-python mlcube run --task=download --workspace=absolute_path_to_custom_dir
+mlcube run --task=download --workspace=absolute_path_to_custom_dir
 ```
 
 **Note:** Sometimes, overriding the workspace path may fail when running train and evaluate task, this is because the input parameter *parameters_file* should be specified, to solve this use:
