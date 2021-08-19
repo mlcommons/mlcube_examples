@@ -1,3 +1,5 @@
 .DS_Store
 tensorflow/workspace/*
 !tensorflow/workspace/parameters
+pytorch/workspace/*
+!pytorch/workspace/parameters

@@ -1,0 +1,4 @@
+PyYAML==5.3
+torch==1.8.1
+wget==3.2
+requests[security]

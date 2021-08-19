@@ -6,6 +6,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
+import sys
 import yaml
 import json
 import os
@@ -14,25 +15,97 @@ import logging.config
 import argparse
 from enum import Enum
 from typing import List
+import wget
 import numpy as np
-import tensorflow as tf
-from tensorflow_core.python.keras.utils.data_utils import get_file
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import TensorDataset, DataLoader
 
 
 logger = logging.getLogger(__name__)
 
 
-class Task(str, Enum):
-    DownloadData = 'download'
-    Train = 'train'
-    Evaluate = 'evaluate'
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+        self.conv2_drop = nn.Dropout2d()
+        self.fc1 = nn.Linear(320, 50)
+        self.fc2 = nn.Linear(50, 10)
 
+    def forward(self, x):
+        x = torch.unsqueeze(x, dim=1)
+        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = x.view(-1, 320)
+        x = F.relu(self.fc1(x))
+        x = F.dropout(x, training=self.training)
+        x = self.fc2(x)
+        return x
+
+
+def test(model, data_loader):
+    model.eval()
+    test_loss = 0
+    correct = 0
+    ce_loss = nn.CrossEntropyLoss()
+    with torch.no_grad():
+        for data, target in data_loader:
+            output = model(data)
+            test_loss += ce_loss(output, target).item() * data.size(0)
+            pred = output.data.max(1, keepdim=True)[1]
+            correct += pred.eq(target.data.view_as(pred)).sum()
+    test_loss /= len(data_loader.sampler)
+    print('\nLoss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
+        test_loss, correct, len(data_loader.dataset),
+        100. * correct / len(data_loader.dataset)))
+    accuracy = correct / len(data_loader.dataset)
+    return {"loss": test_loss, "accuracy": accuracy.item()}
+
+
+def train_loop(n_epochs, model, optimizer, train_loader, log_interval, save_path):
+    model.train()
+    train_loss = 0.0
+    ce_loss = nn.CrossEntropyLoss()
+    for epoch in range(1, n_epochs + 1):
+        for batch_idx, (data, target) in enumerate(train_loader):
+            optimizer.zero_grad()
+            output = model(data)
+            loss = ce_loss(output, target)
+            loss.backward()
+            optimizer.step()
+            train_loss += loss.item() * data.size(0)  # update training loss
+            if batch_idx % log_interval == 0 or batch_idx + 1 == len(train_loader):
+                message = 'Train Epoch: {}/{} [{}/{} ({:.0f}%)]    Loss: {:.6f}'.format(
+                    epoch, n_epochs, batch_idx * len(data), len(train_loader.dataset),
+                    100. * batch_idx / len(train_loader), loss.item())
+                sys.stdout.write("\r" + message)
+                sys.stdout.flush()
+        print("")
+        
 
 def create_directory(path: str) -> None:
     if not os.path.exists(path):
         os.makedirs(path, exist_ok=True)
 
 
+def bar_custom(current, total, width=80):
+    """Custom progress bar for displaying download progress"""
+    progress_message = "Downloading: %d%% [%d / %d] bytes" % (
+        current / total * 100, current, total)
+    sys.stdout.write("\r" + progress_message)
+    sys.stdout.flush()
+
+
+class Task(str, Enum):
+    DownloadData = 'download'
+    Train = 'train'
+    Evaluate = 'evaluate'
+    
+    
 def download(task_args: List[str]) -> None:
     """ Task: download.
     Input parameters:
@@ -58,11 +131,8 @@ def download(task_args: List[str]) -> None:
             "MNIST data has already been download (file exists: %s)", data_file)
         return
 
-    data_file = get_file(
-        fname=data_file,
-        origin='https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz',
-        file_hash='731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1'
-    )
+    data_file = wget.download(
+        'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz', data_file, bar=bar_custom)
 
     if not os.path.isfile(data_file):
         raise ValueError(
@@ -99,47 +169,43 @@ def train(task_args: List[str]) -> None:
     with np.load(dataset_file, allow_pickle=True) as f:
         x_train, y_train = f['x_train'], f['y_train']
     x_train = x_train / 255.0
+
+    tensor_x = torch.Tensor(x_train)  # transform to torch tensor
+    tensor_y = torch.Tensor(y_train).type(torch.LongTensor)
+    train_dataset = TensorDataset(tensor_x, tensor_y)  # create your datset
+    train_loader = DataLoader(train_dataset, parameters.get('batch_size', 32))
+
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
+    model = Net()
+    optimizer = optim.SGD(model.parameters(), lr=0.01)
     if args.model_in != '' and len(os.listdir(args.model_in)) != 0:
         # Load from checkpoint;
-        model = tf.keras.models.load_model(
-            os.path.join(args.model_in, 'mnist_model'))
-    else:
-        # if no model given on CLI, create a new one
-        model = tf.keras.models.Sequential([
-            tf.keras.layers.Flatten(input_shape=(28, 28)),
-            tf.keras.layers.Dense(128, activation='relu'),
-            tf.keras.layers.Dropout(0.2),
-            tf.keras.layers.Dense(10, activation='softmax')
-        ])
+        model_path = os.path.join(args.model_in, 'model.pth')
+        model.load_state_dict(torch.load(model_path))
+        optimizer_path = os.path.join(args.model_in, 'optimizer.pth')
+        optimizer.load_state_dict(torch.load(optimizer_path))
 
     logger.info("Model has been built.")
 
-    model.compile(
-        optimizer=parameters.get('optimizer', 'adam'),
-        loss='sparse_categorical_crossentropy',
-        metrics=['accuracy']
-    )
-    logger.info("Model has been compiled.")
+    n_epochs = parameters.get('epochs', 5)
+    train_loop(n_epochs, model, optimizer,
+                         train_loader, 50, args.model_dir)
 
-    # Train and evaluate
-    history = model.fit(
-        x_train,
-        y_train,
-        batch_size=parameters.get('batch_size', 32),
-        epochs=parameters.get('epochs', 5)
-    )
     logger.info("Model has been trained.")
 
-    with open(args.metrics, 'w') as f:
-        data_json = {'loss': str(history.history["loss"][-1]),
-                     'accuracy': str(history.history["accuracy"][-1])}
-        json.dump(data_json, f)
-
     os.makedirs(args.model_dir, exist_ok=True)
-    model.save(os.path.join(args.model_dir, 'mnist_model'))
+    torch.save(model.state_dict(), os.path.join(args.model_dir, 'model.pth'))
+    torch.save(optimizer.state_dict(), os.path.join(
+        args.model_dir, 'optimizer.pth'))
     logger.info("Model has been saved.")
+
+    metrics = test(model, train_loader)
+
+    with open(args.metrics, 'w') as f:
+        data_json = {'loss': str(metrics["loss"]),
+                    'accuracy': str(metrics["accuracy"])}
+        json.dump(data_json, f)
 
 
 def evaluate(task_args: List[str]) -> None:
@@ -166,16 +232,23 @@ def evaluate(task_args: List[str]) -> None:
     with np.load(dataset_file, allow_pickle=True) as f:
         x_test, y_test = f['x_test'], f['y_test']
     x_test = x_test / 255.0
+
+    tensor_x = torch.Tensor(x_test)  # transform to torch tensor
+    tensor_y = torch.Tensor(y_test).type(torch.LongTensor)
+    eval_dataset = TensorDataset(tensor_x, tensor_y)  # create your datset
+    eval_loader = DataLoader(eval_dataset, parameters.get('batch_size', 32))
+
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
-    model = tf.keras.models.load_model(
-        os.path.join(args.model_in, 'mnist_model'))
+    model = Net()
+    model_path = os.path.join(args.model_in, 'model.pth')
+    model.load_state_dict(torch.load(model_path))
 
-    eval_result = model.evaluate(x_test, y_test)
+    metrics = test(model, eval_loader)
 
     with open(args.metrics, 'w') as f:
-        data_json = {'loss': str(eval_result[0]),
-                     'accuracy': str(eval_result[1])}
+        data_json = {'loss': str(metrics["loss"]),
+                    'accuracy': str(metrics["accuracy"])}
         json.dump(data_json, f)
 
     logger.info("Model has been evaluated.")

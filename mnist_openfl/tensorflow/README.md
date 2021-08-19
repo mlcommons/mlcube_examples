@@ -15,7 +15,7 @@ cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --forc
 ```
 git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples
 git fetch origin pull/33/head:feature/openfl && git checkout feature/openfl
-cd ./mnist_openfl
+cd ./mnist_openfl/tensorflow
 ```
 
 ## Run MNIST MLCube on a local machine with Docker runner
