@@ -19,7 +19,7 @@ cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --forc
 ## Clone MLCube examples and go to chexpert
 ```
 git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples
-git fetch origin pull/XX/head:chest-xray-example && git checkout chest-xray-example
+git fetch origin pull/34/head:chest-xray-example && git checkout chest-xray-example
 cd ./chexpert
 ```
 
