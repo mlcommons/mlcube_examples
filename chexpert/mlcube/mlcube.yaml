@@ -23,7 +23,7 @@ tasks:
     parameters:
       inputs: {data_dir: data/CheXpert-v1.0-small}
   infer:
-  # evaluate model
+  # predict on data
     parameters:
       inputs: {data_dir: data/CheXpert-v1.0-small, model_dir: model/}
       outputs: {log_dir: inference_logs/, out_dir: ./}
