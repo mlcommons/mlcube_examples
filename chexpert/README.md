@@ -18,11 +18,28 @@ git fetch origin pull/XX/head:chest-xray-example && git checkout chest-xray-exam
 cd ./chexpert
 ```
 
+## Get the data
+Because the Chexpert Dataset contains sensitive information, signing an user agreement is required before obtaining the data. This means that we cannot automate the data download process. To obtain the dataset:
+
+1. sign up at the [Chexpert Dataset Download Agreement](https://stanfordmlgroup.github.io/competitions/chexpert/#agreement) and download the small dataset from the link sent to your email.
+2. Unzip and place the `CheXpert-v1.0-small` folder inside  `mlcube/workspace/data` folder. Your folder structure should look like this:
+   
+```
+.
+├── mlcube
+│   └── workspace
+│       └── Data 
+│           └── CheXpert-v1.0-small
+│          		├── valid
+│          		└── valid.csv
+└── project
+```
+
 ## Run Chexpert MLCube on a local machine with Docker runner
 ```
 # Run Chexpert training tasks: download data, train model and evaluate model
-mlcube run --task download_data
 mlcube run --task download_model
+mlcube run --task preprocess
 mlcube run --task infer
 ```
 
