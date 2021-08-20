@@ -9,3 +9,4 @@ PyYAML
 typer
 torch
 torchvision
+pandas

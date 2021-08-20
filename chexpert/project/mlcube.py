@@ -9,24 +9,12 @@ from pathlib import Path
 
 app = typer.Typer()
 
-class DownloadDataTask(object):
-    """Download task Class
-    It defines the environment variables:
-        DATA_ROOT_DIR: Directory path to download the dataset
-    Then executes the download script"""
-    @staticmethod
-    def run(data_dir: str) -> None:
-
-        command = f"python 01_download_dataset.py --data_dir {data_dir}"
-        splitted_command = command.split()
-        process = subprocess.Popen(splitted_command, cwd=".")
-        process.wait()
-
 class DownloadModelTask(object):
-    """Preprocess dataset task Class
-    It defines the environment variables:
-        DATA_ROOT_DIR: Dataset directory path
-    Then executes the preprocess script"""
+    """
+    Downloads model config and checkpoint files
+    Arguments:
+    - model_dir [str]: path for storing the model.
+    """
     @staticmethod
     def run(model_dir: str) -> None:
 
@@ -38,12 +26,31 @@ class DownloadModelTask(object):
         process = subprocess.Popen("./download_model.sh", cwd=".", env=env)
         process.wait()
 
+class PreprocessTask(object):
+    """
+    Task for preprocessing the data
+    
+    Arguments:
+    - data_dir: data location.
+    """
+    @staticmethod
+    def run(data_dir: str) -> None:
+        cmd = f"python3.7 preprocess.py --data_dir={data_dir}"
+        splitted_cmd = cmd.split()
+
+        process = subprocess.Popen(splitted_cmd, cwd=".")
+        process.wait()
+
 class InferTask(object):
-    """Preprocess dataset task Class
-    It defines the environment variables:
-        DATA_DIR: Dataset directory path
-        All other parameters are defined in the parameters_file
-    Then executes the benchmark script"""
+    """
+    Inference task for generating predictions on the CheXpert dataset.
+
+    Arguments:
+    - log_dir [str]: logging location.
+    - data_dir [str]: data location.
+    - model_dir [str]: model location.
+    - out_dir [str]: location for storing the predictions.
+    """
     @staticmethod
     def run(log_dir: str, data_dir: str, model_dir: str, out_dir) -> None:
         cmd = f"python3.7 chexpert.py --log_dir={log_dir} --data_dir={data_dir} --model_dir={model_dir} --out_dir={out_dir}"
@@ -52,13 +59,13 @@ class InferTask(object):
         process = subprocess.Popen(splitted_cmd, cwd=".")
         process.wait()
 
-@app.command("download_data")
-def download_data(data_dir: str = typer.Option(..., '--data_dir')):
-    DownloadDataTask.run(data_dir)
-
 @app.command("download_model")
 def download_model(model_dir: str = typer.Option(..., '--model_dir')):
     DownloadModelTask.run(model_dir)
+
+@app.command("preprocess")
+def preprocess(data_dir: str = typer.Option(..., '--data_dir')):
+    PreprocessTask.run(data_dir)
 
 @app.command("infer")
 def infer(log_dir: str = typer.Option(..., '--log_dir'),
