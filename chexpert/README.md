@@ -1,4 +1,9 @@
 # MLCube: Chexpert Example
+This example demonstrates how to use MLCube to work with a computer vision model trained on the CheXpert Dataset. 
+
+CheXpert is a large dataset of chest X-rays and competition for automated chest x-ray interpretation, which features uncertainty labels and radiologist-labeled reference standard evaluation sets.
+
+The model used here is based on the top 1 solution of the CheXpert challenge, which can be found [here](https://github.com/jfhealthcare/Chexpert).
 
 ### Project setup
 ```Python
