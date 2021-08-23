@@ -42,7 +42,7 @@ Because the Chexpert Dataset contains sensitive information, signing an user agr
 
 ## Run Chexpert MLCube on a local machine with Docker runner
 ```
-# Run Chexpert training tasks: download data, train model and evaluate model
+# Run Chexpert training tasks: download data, download the model and generate predictions
 mlcube run --task download_model
 mlcube run --task preprocess
 mlcube run --task infer
