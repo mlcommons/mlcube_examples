@@ -1,5 +1,5 @@
 name: MLCommons Chexpert
-description: MLCommons Chexpert examplefor inference with the Chexpert model.
+description: MLCommons Chexpert example for inference with the Chexpert model.
 authors:
  - {name: "MLCommons Best Practices Working Group"}
 
