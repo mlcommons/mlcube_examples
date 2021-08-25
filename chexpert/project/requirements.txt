@@ -10,3 +10,4 @@ typer
 torch
 torchvision
 pandas
+tqdm
