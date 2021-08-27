@@ -1,4 +1,4 @@
-name: matmul
+name: hello_world
 description: MLCommons MatMul MLCube example
 authors:
   - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
