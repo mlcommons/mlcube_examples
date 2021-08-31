@@ -413,34 +413,33 @@ def test(data_dir=None, output_dir=None, model_dir=None, global_batch_size=256, 
 
 def download_task(task_args: List[str]) -> None:
     """ Task: preprocess.
-            Input parameters:
-                --data_dir, --log_dir, --model_dir, --parameters_file
+        Input parameters: --raw_data_dir
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
+    parser.add_argument('--raw_data_dir', '--raw-data-dir', type=str, default=None, help="Raw dataset path.")
     args = parser.parse_args(args=task_args)
 
-    os.makedirs(args.data_dir, exist_ok=True)
+    os.makedirs(args.raw_data_dir, exist_ok=True)
     data_url = "https://github.com/vibhatha/data_repo/raw/main/em_denoise/emdenoise_minibatch_v1.zip"
-    data_file_expected_dir = os.path.join(args.data_dir, 'emdenoise_minibatch_v1.zip')
+    data_file_expected_dir = os.path.join(args.raw_data_dir, 'emdenoise_minibatch_v1.zip')
     if not os.path.exists(data_file_expected_dir):
-        filename = wget.download(data_url, out=args.data_dir)
+        filename = wget.download(data_url, out=args.raw_data_dir)
         if not os.path.exists(data_file_expected_dir):
-            raise ValueError(f'Em denoise data not downloaded to: {os.listdir(args.data_dir)}')
-        print(f"File downloaded : {args.data_dir}/{filename}")
+            raise ValueError(f'Em denoise data not downloaded to: {os.listdir(args.raw_data_dir)}')
+        print(f"File downloaded : {args.raw_data_dir}/{filename}")
 
 
 def preprocess_task(task_args: List[str]) -> None:
     """ Task: preprocess.
-        Input parameters:
-            --data_dir, --log_dir, --model_dir, --parameters_file
+        Input parameters: raw_data_dir, data_dir
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
+    parser.add_argument('--raw_data_dir', '--raw-data-dir', type=str, default=None, help="Raw dataset path.")
+    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Preprocessed dataset path.")
     args = parser.parse_args(args=task_args)
 
     os.makedirs(args.data_dir, exist_ok=True)
-    data_source_dir, data_dest_dir = args.data_dir, args.data_dir
+    data_source_dir, data_dest_dir = args.raw_data_dir, args.data_dir
     if not os.path.exists(os.path.join(data_source_dir, 'emdenoise_minibatch_v1.zip')):
         raise ValueError(f'Em denoise data not downloaded to: {os.listdir(data_source_dir)}')
     file = os.listdir(data_source_dir)[0]

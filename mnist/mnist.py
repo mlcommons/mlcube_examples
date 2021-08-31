@@ -38,8 +38,14 @@ def download(task_args: List[str]) -> None:
     """
     logger.info(f"Starting '{Task.DownloadData}' task")
     parser = argparse.ArgumentParser()
+    parser.add_argument('--data_config', '--data-config', type=str, default=None,
+                        help="Path to a YAML file with data configuration.")
     parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Path to a dataset file.")
     args = parser.parse_args(args=task_args)
+
+    with open(args.data_config, 'r') as stream:
+        data_config = yaml.load(stream, Loader=yaml.FullLoader)
+    logger.info("Data configuration has been read (%s).", args.data_config)
 
     if args.data_dir is None:
         raise ValueError("Data directory is not specified (did you use --data-dir=PATH?)")
@@ -55,8 +61,8 @@ def download(task_args: List[str]) -> None:
 
     data_file = get_file(
         fname=data_file,
-        origin='https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz',
-        file_hash='731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1'
+        origin=data_config.get('uri', 'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz'),
+        file_hash=data_config.get('hash', '731c5ac602752760c8e48fbffcf8c3b850d9dc2a2aedcf2cc48468fc17b673d1')
     )
 
     if not os.path.isfile(data_file):
@@ -68,19 +74,19 @@ def download(task_args: List[str]) -> None:
 
 def train(task_args: List[str]) -> None:
     """ Task: train.
-    Input parameters:
-        --data_dir, --log_dir, --model_dir, --parameters_file
+    Input parameters:  --data_dir, --train_config
+    Output parameters: --log_dir, --model_dir
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Dataset path.")
+    parser.add_argument('--data_dir', '--data-dir', type=str, default=None, help="Path to training dataset.")
+    parser.add_argument('--train_config', '--train-config', type=str, default=None,
+                        help="Path to a YAML file with training configuration parameters.")
     parser.add_argument('--model_dir', '--model-dir', type=str, default=None, help="Model output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
     args = parser.parse_args(args=task_args)
 
-    with open(args.parameters_file, 'r') as stream:
-        parameters = yaml.load(stream, Loader=yaml.FullLoader)
-    logger.info("Parameters have been read (%s).", args.parameters_file)
+    with open(args.train_config, 'r') as stream:
+        train_config = yaml.load(stream, Loader=yaml.FullLoader)
+    logger.info("Train configuration has been read (%s).", args.train_config)
 
     dataset_file = os.path.join(args.data_dir, 'mnist.npz')
     with np.load(dataset_file, allow_pickle=True) as f:
@@ -98,19 +104,15 @@ def train(task_args: List[str]) -> None:
     logger.info("Model has been built.")
 
     model.compile(
-        optimizer=parameters.get('optimizer', 'adam'),
+        optimizer=train_config.get('optimizer', 'adam'),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
     logger.info("Model has been compiled.")
 
     # Train and evaluate
-    model.fit(
-        x_train,
-        y_train,
-        batch_size=parameters.get('batch_size', 32),
-        epochs=parameters.get('train_epochs', 5)
-    )
+    model.fit(x_train, y_train, batch_size=train_config.get('batch_size', 32),
+              epochs=train_config.get('train_epochs', 5))
     logger.info("Model has been trained.")
 
     model.evaluate(x_test, y_test, verbose=2)

@@ -1,66 +1,38 @@
 # MNIST MLCube
 
-## Create and initialize python environment
+Proof-of-concept for MLCube configuration 2.0. Please, review the following:
+
+1. Local user configuration for docker (and other) runtime: [.mlcube.yaml](../.mlcube.yaml). This file here is for
+   example, and is not shipped with MLCubes in general. It contains common options for MLCube execution environments
+   common to all MLCubes. 
+2. New MLCube configuration file 2.0 [mlcube.yaml](../mlcube.py)
+3. The [mlcube.py](../mlcube.py) here simulates MLCube CLI. It is temporary stored here, and is part of MLCube library.
+
+This modified MNIST example depends on latest version of docker runner located in this branch:
 ```
-virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker mlcube-singularity mlcube-ssh
+https://github.com/sergey-serebryakov/mlbox/tree/feature/configV2
 ```
 
-## Clone MLCube examples and go to MNIST root directory
-```
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/mnist
-```
+I do not think it's worth spending time now trying to reproduce results, but in case it's required:
+1. Clone that branch.
+2. Create virtual environment with python >= 3.6.
+3. Export PYTHONPATH variable. Only mlcube_docker is requried to be present.
+4. Install mlcube dependencies (mlcube/requirements.txt) and omegaconf
+5. Run this example:
+   ```bash
+   python mlcube.py show_config --mlcube=./mnist --platform=docker --resolve
+   python mlcube.py run --mlcube ./mnist --task download --platform docker
+   python mlcube.py run --mlcube ./mnist --task train --platform docker
+   ```
 
-## Run MNIST MLCube on a local machine with Docker runner
-```
-# Configure MNIST MLCube
-mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
+The example implementation uses OmegaConf, so users can use configuration variables:
+```shell
+$ mlcube run ... --workspace=/nfs/workspace/mnist
+# workspace: /nfs/workspace/mnist
 
-# Run MNIST training tasks: download data and train the model
-mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/download.yaml
-mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/train.yaml
-```
-Go to `workspace/` directory and study its content. Then: 
-```
-sudo rm -r ./workspace/data ./workspace/download_logs ./workspace/model ./workspace/train_logs   
-``` 
+$ mlcube run ... --workspace='/nfs/workspace/${name}'
+# workspace: /nfs/workspace/mnist
 
-
-## Run MNIST MLCube on a local machine with Singularity runner
+$ mlcube run ... --workspace='~/.mlcube/workspace/${name}'
+# workspace: /home/developer/.mlcube/workspace/mnist
 ```
-# Configure MNIST MLCube
-mlcube_singularity configure --mlcube=. --platform=platforms/singularity.yaml
-
-# Run MNIST training tasks: download data and train the model
-mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/download.yaml
-mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/train.yaml
-```
-Go to `workspace/` directory and study its content. Then:
-```
-sudo rm -r ./workspace/data ./workspace/download_logs ./workspace/model ./workspace/train_logs   
-``` 
-
-
-## Run MNIST MLCube on a remote machine with SSH runner
-Setup passwordless access to a remote machine. Create and/or update your SSH configuration file (`~/.ssh/config`).
-Create an alias for your remote machine. This will enable access for tools like `ssh`, `rsync` and `scp` using 
-`mlcube-remote` name instead of actual name or IP address. 
-```
-Host mlcube-remote
-    HostName {{IP_ADDRESS}}
-    User {{USER_NAME}}
-    IdentityFile {{PATH_TO_IDENTITY_FILE}}
-```
-Remove results of previous runs. Remove all directories in `workspace/` except `workspace/parameters`.
-
-```
-# Configure MNIST MLCube
-mlcube_ssh configure --mlcube=. --platform=platforms/ssh.yaml
-
-# Run MNIST training tasks: download data and train the model
-mlcube_ssh run --mlcube=. --platform=platforms/ssh.yaml --task=run/download.yaml
-mlcube_ssh run --mlcube=. --platform=platforms/ssh.yaml --task=run/train.yaml
-```
-Go to `workspace/` directory and study its content. Then:
-```
-sudo rm -r ./workspace/data ./workspace/download_logs ./workspace/model ./workspace/train_logs   
-``` 

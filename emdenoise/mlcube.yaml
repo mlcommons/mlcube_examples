@@ -1,13 +1,27 @@
-schema_version: 1.0.0
-schema_type: "mlcube_root"
+name: emdenoise
+description: MLCommons EMDenoise MLCube example
+authors:
+  - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
 
-name: "emdenoise"
-author: "MLCommons Best Practices Working Group"
-version: 0.1.0
-mlcube_spec_version: 0.1.0
+platform:
+  accelerator_count: 0
+
+docker:
+  image: mlcommons/sciml_em_denoise:0.0.1
 
 tasks:
-  - "tasks/download.yaml"
-  - "tasks/preprocess.yaml"
-  - "tasks/train.yaml"
-  - "tasks/test.yaml"
+  download:
+    parameters:
+      outputs: {raw_data_dir: raw_data/, log_dir: logs/}
+  preprocess:
+    parameters:
+      inputs: {raw_data_dir: raw_data/}
+      outputs: {data_dir: data/, log_dir: logs/}
+  train:
+    parameters:
+      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml}
+      outputs: {model_dir: model/, output_dir: output/, log_dir: logs/}
+  test:
+    parameters:
+      inputs: {data_dir: data/, model_dir: model/, parameters_file: parameters/default.parameters.yaml}
+      outputs: {output_dir: output/, log_dir: logs/}

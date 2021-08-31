@@ -1,11 +1,28 @@
-schema_version: 1.0.0
-schema_type: mlcube_root
-
 name: mnist
-author: MLPerf Best Practices Working Group
-version: 0.1.0
-mlcube_spec_version: 0.1.0
+description: MLCommons MNIST MLCube example
+authors:
+  - {name: "First Second", email: "first.second@company.com", org: "Company Inc."}
+
+platform:
+  accelerator_count: 0
+  accelerator_maker: NVIDIA
+  accelerator_model: A100-80GB
+  host_memory_gb: 40
+  need_internet_access: True
+  host_disk_space_gb: 100
+
+docker:
+  image: mlcommons/mnist:0.0.1
+
+singularity:
+  image: mnist-0.0.1.simg
 
 tasks:
-  - 'tasks/download.yaml'
-  - 'tasks/train.yaml'
+  download:
+    parameters:
+      inputs: {data_config: data.yaml}
+      outputs: {data_dir: data/, log_dir: logs/}
+  train:
+    parameters:
+      inputs: {data_dir: data/, train_config: train.yaml}
+      outputs: {log_dir: logs/, model_dir: model/}
