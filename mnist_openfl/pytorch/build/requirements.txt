@@ -1,0 +1,5 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+PyYAML==5.3
+torch==1.8.0+cpu
+wget==3.2
+requests[security]

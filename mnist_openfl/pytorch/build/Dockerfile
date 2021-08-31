@@ -1,8 +1,5 @@
 FROM ubuntu:18.04
-MAINTAINER MLPerf MLBox Working Group
-
-# Remove all stopped containers: docker rm $(docker ps -a -q)
-# Remove containers like none:none: docker rmi $(docker images | grep none | awk '{print $3}')
+LABEL MLPerf MLBox Working Group
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
