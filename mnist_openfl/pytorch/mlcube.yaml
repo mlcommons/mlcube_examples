@@ -1,5 +1,5 @@
 name: MLCommons Mnist FL
-description: MLCommons Mnist example with support for federated fearning
+description: MLCommons Pytorch Mnist example with support for federated fearning
 authors: 
  - {name: "MLCommons Best Practices Working Group"}
 

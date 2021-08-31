@@ -4,8 +4,7 @@ Disable GPUs - not all nodes used for testing have GPUs
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 """
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import argparse
 import json
@@ -82,9 +81,12 @@ def train_loop(n_epochs, model, optimizer, train_loader, log_interval):
             optimizer.step()
             train_loss += loss.item() * data.size(0)  # update training loss
             if batch_idx % log_interval == 0 or batch_idx + 1 == len(train_loader):
-                message = '[{}/{} ({:.0f}%)]    Loss: {:.6f}'.format(
-                    batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.item())
+                message = "[{}/{} ({:.0f}%)]    Loss: {:.6f}".format(
+                    batch_idx * len(data),
+                    len(train_loader.dataset),
+                    100.0 * batch_idx / len(train_loader),
+                    loss.item(),
+                )
                 sys.stdout.write("\r" + message)
                 sys.stdout.flush()
 
@@ -97,16 +99,20 @@ def create_directory(path: str) -> None:
 def bar_custom(current, total, width=80):
     """Custom progress bar for displaying download progress"""
     progress_message = "Downloading: %d%% [%d / %d] bytes" % (
-        current / total * 100, current, total)
+        current / total * 100,
+        current,
+        total,
+    )
     sys.stdout.write("\r" + progress_message)
     sys.stdout.flush()
 
 
 class Task(str, Enum):
     """Define tasks"""
-    DownloadData = 'download'
-    Train = 'train'
-    Evaluate = 'evaluate'
+
+    DownloadData = "download"
+    Train = "train"
+    Evaluate = "evaluate"
 
 
 def download(task_args: List[str]) -> None:
@@ -116,32 +122,41 @@ def download(task_args: List[str]) -> None:
     """
     logger.info(f"Starting '{Task.DownloadData}' task")
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str,
-                        default=None, help="Path to a dataset file.")
+    parser.add_argument(
+        "--data_dir",
+        "--data-dir",
+        type=str,
+        default=None,
+        help="Path to a dataset file.",
+    )
     args = parser.parse_args(args=task_args)
 
     if args.data_dir is None:
         raise ValueError(
-            "Data directory is not specified (did you use --data-dir=PATH?)")
+            "Data directory is not specified (did you use --data-dir=PATH?)"
+        )
     os.makedirs(args.data_dir, exist_ok=True)
 
     if not args.data_dir.startswith("/"):
         logger.warning("Data directory seems to be a relative path.")
 
-    data_file = os.path.join(args.data_dir, 'mnist.npz')
+    data_file = os.path.join(args.data_dir, "mnist.npz")
     if os.path.exists(data_file):
-        logger.info(
-            "MNIST data has already been download (file exists: %s)", data_file)
+        logger.info("MNIST data has already been download (file exists: %s)", data_file)
         return
 
     print("\nDownloading dataset...")
     data_file = wget.download(
-        'https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz', data_file, bar=bar_custom)
+        "https://storage.googleapis.com/tensorflow/tf-keras-datasets/mnist.npz",
+        data_file,
+        bar=bar_custom,
+    )
     print("\nMNIST dataset has been downloaded.")
 
     if not os.path.isfile(data_file):
         raise ValueError(
-            f"MNIST dataset has not been downloaded - dataset file does not exist: {data_file}")
+            f"MNIST dataset has not been downloaded - dataset file does not exist: {data_file}"
+        )
     else:
         logger.info("MNIST dataset has been downloaded.")
     logger.info("The '%s' task has been completed.", Task.DownloadData)
@@ -153,65 +168,87 @@ def train(task_args: List[str]) -> None:
         --data_dir, --log_dir, --model_dir, --parameters_file
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str,
-                        default=None, help="Dataset path.")
-    parser.add_argument('--model_in', '--model-in', type=str,
-                        default=None, help="Model output directory.")
-    parser.add_argument('--model_dir', '--model-dir', type=str,
-                        default=None, help="Model output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    parser.add_argument('--metrics', '--metrics', type=str, default=None,
-                        help="Parameters default values.")
+    parser.add_argument(
+        "--data_dir", "--data-dir", type=str, default=None, help="Dataset path."
+    )
+    parser.add_argument(
+        "--model_in",
+        "--model-in",
+        type=str,
+        default=None,
+        help="Model output directory.",
+    )
+    parser.add_argument(
+        "--model_dir",
+        "--model-dir",
+        type=str,
+        default=None,
+        help="Model output directory.",
+    )
+    parser.add_argument(
+        "--parameters_file",
+        "--parameters-file",
+        type=str,
+        default=None,
+        help="Parameters default values.",
+    )
+    parser.add_argument(
+        "--metrics",
+        "--metrics",
+        type=str,
+        default=None,
+        help="Parameters default values.",
+    )
 
     args = parser.parse_args(args=task_args)
 
-    with open(args.parameters_file, 'r') as stream:
+    with open(args.parameters_file, "r") as stream:
         parameters = yaml.load(stream, Loader=yaml.FullLoader)
     logger.info("Parameters have been read (%s).", args.parameters_file)
 
-    dataset_file = os.path.join(args.data_dir, 'mnist.npz')
+    dataset_file = os.path.join(args.data_dir, "mnist.npz")
     with np.load(dataset_file, allow_pickle=True) as f:
-        x_train, y_train = f['x_train'], f['y_train']
+        x_train, y_train = f["x_train"], f["y_train"]
     x_train = x_train / 255.0
 
     tensor_x = torch.Tensor(x_train)  # transform to torch tensor
     tensor_y = torch.Tensor(y_train).type(torch.LongTensor)
-    train_dataset = TensorDataset(tensor_x, tensor_y)  # create your datset
-    train_loader = DataLoader(train_dataset, parameters.get('batch_size', 32))
+    train_dataset = TensorDataset(tensor_x, tensor_y)  # create datset
+    train_loader = DataLoader(train_dataset, parameters.get("batch_size", 32))
 
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     model = Net()
     optimizer = optim.SGD(model.parameters(), lr=0.01)
-    if args.model_in != '' and len(os.listdir(args.model_in)) != 0:
+    if args.model_in != "" and len(os.listdir(args.model_in)) != 0:
         # Load from checkpoint;
-        model_path = os.path.join(args.model_in, 'model.pth')
+        model_path = os.path.join(args.model_in, "model.pth")
         model.load_state_dict(torch.load(model_path))
-        optimizer_path = os.path.join(args.model_in, 'optimizer.pth')
+        optimizer_path = os.path.join(args.model_in, "optimizer.pth")
         optimizer.load_state_dict(torch.load(optimizer_path))
 
     logger.info("Model has been built.")
 
     print("\nTraining model...")
-    n_epochs = parameters.get('epochs', 5)
+    n_epochs = parameters.get("epochs", 5)
     train_loop(n_epochs, model, optimizer, train_loader, 50)
 
     logger.info("Model has been trained.")
 
     os.makedirs(args.model_dir, exist_ok=True)
-    torch.save(model.state_dict(), os.path.join(args.model_dir, 'model.pth'))
-    torch.save(optimizer.state_dict(), os.path.join(
-        args.model_dir, 'optimizer.pth'))
+    torch.save(model.state_dict(), os.path.join(args.model_dir, "model.pth"))
+    torch.save(optimizer.state_dict(), os.path.join(args.model_dir, "optimizer.pth"))
     logger.info("Model has been saved.")
 
     metrics = evaluate_model(model, train_loader)
-    print('\nTraining metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%'.format(
-        metrics["loss"], 100 * metrics["accuracy"]))
+    print(
+        "\nTraining metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%".format(
+            metrics["loss"], 100 * metrics["accuracy"]
+        )
+    )
 
-    with open(args.metrics, 'w') as f:
-        data_json = {'loss': str(metrics["loss"]),
-                     'accuracy': str(metrics["accuracy"])}
+    with open(args.metrics, "w") as f:
+        data_json = {"loss": str(metrics["loss"]), "accuracy": str(metrics["accuracy"])}
         json.dump(data_json, f)
 
 
@@ -221,44 +258,62 @@ def evaluate(task_args: List[str]) -> None:
         --data_dir, --log_dir, --model_dir, --parameters_file
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_dir', '--data-dir', type=str,
-                        default=None, help="Dataset path.")
-    parser.add_argument('--model_in', '--model-in', type=str,
-                        default=None, help="Model output directory.")
-    parser.add_argument('--parameters_file', '--parameters-file', type=str, default=None,
-                        help="Parameters default values.")
-    parser.add_argument('--metrics', '--metrics', type=str, default=None,
-                        help="Parameters default values.")
+    parser.add_argument(
+        "--data_dir", "--data-dir", type=str, default=None, help="Dataset path."
+    )
+    parser.add_argument(
+        "--model_in",
+        "--model-in",
+        type=str,
+        default=None,
+        help="Model output directory.",
+    )
+    parser.add_argument(
+        "--parameters_file",
+        "--parameters-file",
+        type=str,
+        default=None,
+        help="Parameters default values.",
+    )
+    parser.add_argument(
+        "--metrics",
+        "--metrics",
+        type=str,
+        default=None,
+        help="Parameters default values.",
+    )
     args = parser.parse_args(args=task_args)
 
-    with open(args.parameters_file, 'r') as stream:
+    with open(args.parameters_file, "r") as stream:
         parameters = yaml.load(stream, Loader=yaml.FullLoader)
-    logger.info("Parameters have been read (%s).", args.parameters_file)
+        logger.info("Parameters have been read (%s).", parameters)
 
-    dataset_file = os.path.join(args.data_dir, 'mnist.npz')
+    dataset_file = os.path.join(args.data_dir, "mnist.npz")
     with np.load(dataset_file, allow_pickle=True) as f:
-        x_test, y_test = f['x_test'], f['y_test']
+        x_test, y_test = f["x_test"], f["y_test"]
     x_test = x_test / 255.0
 
     tensor_x = torch.Tensor(x_test)  # transform to torch tensor
     tensor_y = torch.Tensor(y_test).type(torch.LongTensor)
-    eval_dataset = TensorDataset(tensor_x, tensor_y)  # create your datset
-    eval_loader = DataLoader(eval_dataset, parameters.get('batch_size', 32))
+    eval_dataset = TensorDataset(tensor_x, tensor_y)  # create datset
+    eval_loader = DataLoader(eval_dataset, parameters.get("batch_size", 32))
 
     logger.info("Dataset has been loaded (%s).", dataset_file)
 
     model = Net()
-    model_path = os.path.join(args.model_in, 'model.pth')
+    model_path = os.path.join(args.model_in, "model.pth")
     model.load_state_dict(torch.load(model_path))
 
     print("\nEvaluating model...")
     metrics = evaluate_model(model, eval_loader)
-    print('Evaluate metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%'.format(
-        metrics["loss"], 100 * metrics["accuracy"]))
+    print(
+        "Evaluate metrics:\nLoss: {:.4f}, Accuracy: {:.2f}%".format(
+            metrics["loss"], 100 * metrics["accuracy"]
+        )
+    )
 
-    with open(args.metrics, 'w') as f:
-        data_json = {'loss': str(metrics["loss"]),
-                     'accuracy': str(metrics["accuracy"])}
+    with open(args.metrics, "w") as f:
+        data_json = {"loss": str(metrics["loss"]), "accuracy": str(metrics["accuracy"])}
         json.dump(data_json, f)
 
     logger.info("Model has been evaluated.")
@@ -271,10 +326,10 @@ def main():
     # noinspection PyBroadException
     try:
         parser = argparse.ArgumentParser()
-        parser.add_argument('mlcube_task', type=str,
-                            help="Task for this MLCube.")
-        parser.add_argument('--log_dir', '--log-dir', type=str,
-                            required=True, help="Logging directory.")
+        parser.add_argument("mlcube_task", type=str, help="Task for this MLCube.")
+        parser.add_argument(
+            "--log_dir", "--log-dir", type=str, required=True, help="Logging directory."
+        )
         mlcube_args, task_args = parser.parse_known_args()
 
         os.makedirs(mlcube_args.log_dir, exist_ok=True)
@@ -282,21 +337,26 @@ def main():
             "version": 1,
             "disable_existing_loggers": True,
             "formatters": {
-                "standard": {"format": "%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s"},
+                "standard": {
+                    "format": "%(asctime)s - %(name)s - %(threadName)s - %(levelname)s - %(message)s"
+                },
             },
             "handlers": {
                 "file_handler": {
                     "class": "logging.FileHandler",
                     "level": "INFO",
                     "formatter": "standard",
-                    "filename": os.path.join(mlcube_args.log_dir, f"mlcube_mnist_{mlcube_args.mlcube_task}.log")
+                    "filename": os.path.join(
+                        mlcube_args.log_dir,
+                        f"mlcube_mnist_{mlcube_args.mlcube_task}.log",
+                    ),
                 }
             },
             "loggers": {
                 "": {"level": "INFO", "handlers": ["file_handler"]},
                 "__main__": {"level": "NOTSET", "propagate": "yes"},
-                "tensorflow": {"level": "NOTSET", "propagate": "yes"}
-            }
+                "tensorflow": {"level": "NOTSET", "propagate": "yes"},
+            },
         }
         logging.config.dictConfig(logger_config)
 
@@ -312,5 +372,5 @@ def main():
         logger.exception(err)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
