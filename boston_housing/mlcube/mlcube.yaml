@@ -6,7 +6,7 @@ authors:
 platform:
   accelerator_count: 0
 
-container:
+docker:
   # Image name.
   image: mlcommons/boston_housing:0.0.1
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
@@ -17,18 +17,16 @@ container:
 tasks:
   download_data:
   # Download boston housing dataset
-    io:
+    parameters:
       # Directory where dataset will be saved.
-      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
+      outputs: {data_dir: data/}
   preprocess_data:
   # Preprocess dataset
-    io:
+    parameters:
       # Same directory location where dataset was downloaded
-      - {name: data_dir, type: directory, io: output, default: $WORKSPACE/data}
+      inputs: {data_dir: data/}
   train:
   # Train gradient boosting regressor model
-    io:
+    parameters:
       # Processed dataset file
-      - {name: dataset_file_path, type: file, io: input, default: $WORKSPACE/data/processed_dataset.csv}
-      # Yaml file with training parameters.
-      - {name: parameters_file, type: file, io: input, default: $WORKSPACE/parameters.yaml}
+      inputs: {dataset_file_path: data/processed_dataset.csv, parameters_file: parameters.yaml}

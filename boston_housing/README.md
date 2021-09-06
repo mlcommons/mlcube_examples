@@ -2,12 +2,11 @@
 
 In this tutorial we're going to use the [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html). We'll take an existing implementation, create the needed files to pack it into MLCube and execute all tasks.
 
-
 ## Original project code
 
 At fist we have only 4 files, one for package dependencies and 3 scripts for each task: download data, preprocess data and train.
 
-```
+```bash
 ├── project
     ├── 01_download_dataset.py
     ├── 02_preprocess_dataset.py
@@ -30,12 +29,11 @@ The most important thing that we need to remember about these scripts are the in
 **--dataset_file_path** : Processed dataset file path. Note: this is the full path to the csv file.
 **--n_estimators** : Number of boosting stages to perform. In this case we're using a gradient boosting regressor.
 
-
 ## MLCube scructure
 
 We'll need a couple of files for MLCube, first we'll need to create a folder called **mlcube** in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place)
 
-```
+```bash
 ├── mlcube
 │   ├── mlcube.yaml
 │   ├── mlcube_cli.py
@@ -103,7 +101,6 @@ process.wait()
 
 In this tutorial we already have a shell script containing the steps to run the train task, the file is: **project/run_and_time.sh**, please take a look and study its content.
 
-
 ### MLCube Python CLI file
 
 The **mlcube/mlcube_cli.py** file simulates MLCube CLI. It is temporary stored here, and is part of MLCube library. The only command avaibale to execute is `run`, and the possible arguments are:
@@ -115,10 +112,9 @@ The **mlcube/mlcube_cli.py** file simulates MLCube CLI. It is temporary stored h
 
 Example:
 
-```
+```bash
 python mlcube_cli.py run --mlcube ./ --task train --platform docker
 ```
-
 
 ### MLCube Python entrypoint file
 
@@ -142,7 +138,7 @@ Keep in mind the tag that we just described.
 
 At this point our solution folder structure should look like this:
 
-```
+```bash
 ├── mlcube
 │   ├── mlcube.yaml
 │   ├── mlcube_cli.py
@@ -157,7 +153,6 @@ At this point our solution folder structure should look like this:
     ├── requirements.txt
     └── run_and_time.sh
 ```
-
 
 ### Define MLCube files
 
@@ -181,15 +176,17 @@ This file is already provided, please take a look and study its content.
 
 With this file we have finished the packing of the project into MLCube! Now we can setup the project and run all the tasks.
 
-
 ### Project setup
-```Python
+
+```bash
 # Create Python environment 
 virtualenv -p python3 ./env && source ./env/bin/activate
-# Install MLCube and MLCube docker runner from GitHub repository (normally, users will just run `pip install mlcube mlcube_docker`)
-git clone https://github.com/sergey-serebryakov/mlbox.git && cd mlbox && git checkout feature/configV2
-cd ./runners/mlcube_docker && export PYTHONPATH=$(pwd)
-cd ../../ && pip install -r mlcube/requirements.txt && pip install omegaconf && cd ../
+
+# Install MLCube and MLCube docker runner from GitHub repository
+# (normally, users will just run `pip install mlcube mlcube_docker`)
+git clone https://github.com/mlcommons/mlcube && cd mlcube/mlcube
+python setup.py bdist_wheel  && pip install --force-reinstall ./dist/mlcube-* && cd ..
+cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --force-reinstall --no-deps ./dist/mlcube_docker-* && cd ../../..
 
 # Fetch the boston housing example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
@@ -208,7 +205,8 @@ The [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bosto
 | Total                          | (After all tasks) | All        | ~92 KB |
 
 ### Tasks execution
-```
+
+```bash
 # Download Boston housing dataset. Default path = /workspace/data
 # To override it, use --data_dir=DATA_DIR
 python mlcube_cli.py run --task download_data
