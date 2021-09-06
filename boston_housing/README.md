@@ -36,7 +36,6 @@ We'll need a couple of files for MLCube, first we'll need to create a folder cal
 ```bash
 ├── mlcube
 │   ├── mlcube.yaml
-│   ├── mlcube_cli.py
 │   └── workspace
 │       └── parameters.yaml
 └── project
@@ -101,19 +100,30 @@ process.wait()
 
 In this tutorial we already have a shell script containing the steps to run the train task, the file is: **project/run_and_time.sh**, please take a look and study its content.
 
-### MLCube Python CLI file
+### MLCube Command
 
-The **mlcube/mlcube_cli.py** file simulates MLCube CLI. It is temporary stored here, and is part of MLCube library. The only command avaibale to execute is `run`, and the possible arguments are:
-
-  --mlcube      TEXT    Path to MLCube directory, default is current.
-  --platform    TEXT    Platform to run MLCube, default is docker/podman.
-  --task        TEXT    MLCube task name to run, default is `main`.
-  --workspace   TEXT    Workspace path, default is `workspace` within MLCube folder
-
-Example:
+We are targeting pull-type installation, so MLCube images should be available on docker hub. If not, try this:
 
 ```bash
-python mlcube_cli.py run --mlcube ./ --task train --platform docker
+mlcube run ... -Pdocker.build_strategy=auto
+```
+
+Parameters defined in mlcube.yaml can be overridden using: param=input, example:
+
+```bash
+mlcube run --task=download_data data_dir=absolute_path_to_custom_dir
+```
+
+Also, users can override the workspace directory by using:
+
+```bash
+mlcube run --task=download_data --workspace=absolute_path_to_custom_dir
+```
+
+Note: Sometimes, overriding the workspace path could fail for some task, this is because the input parameter parameters_file should be specified, to solve this use:
+
+```bash
+mlcube run --task=train --workspace=absolute_path_to_custom_dir parameters_file=$(pwd)/workspace/parameters.yaml
 ```
 
 ### MLCube Python entrypoint file
@@ -141,7 +151,6 @@ At this point our solution folder structure should look like this:
 ```bash
 ├── mlcube
 │   ├── mlcube.yaml
-│   ├── mlcube_cli.py
 │   └── workspace
 │       └── parameters.yaml
 └── project
@@ -209,13 +218,13 @@ The [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bosto
 ```bash
 # Download Boston housing dataset. Default path = /workspace/data
 # To override it, use --data_dir=DATA_DIR
-python mlcube_cli.py run --task download_data
+mlcube run --task download_data
 
 # Preprocess Boston housing dataset, this will convert raw .txt data to .csv format
 # It will use the DATA_DIR path defined in the previous step
-python mlcube_cli.py run --task preprocess_data
+mlcube run --task preprocess_data
 
 # Run training.
 # Parameters to override: --dataset_file_path=DATASET_FILE_PATH --parameters_file=PATH_TO_TRAINING_PARAMS
-python mlcube_cli.py run --task train
+mlcube run --task train
 ```
