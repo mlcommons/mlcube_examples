@@ -217,7 +217,7 @@ The [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bosto
 
 ```bash
 # Download Boston housing dataset. Default path = /workspace/data
-# To override it, use --data_dir=DATA_DIR
+# To override it, use data_dir=DATA_DIR
 mlcube run --task download_data
 
 # Preprocess Boston housing dataset, this will convert raw .txt data to .csv format
@@ -225,6 +225,6 @@ mlcube run --task download_data
 mlcube run --task preprocess_data
 
 # Run training.
-# Parameters to override: --dataset_file_path=DATASET_FILE_PATH --parameters_file=PATH_TO_TRAINING_PARAMS
+# Parameters to override: dataset_file_path=DATASET_FILE_PATH parameters_file=PATH_TO_TRAINING_PARAMS
 mlcube run --task train
 ```
