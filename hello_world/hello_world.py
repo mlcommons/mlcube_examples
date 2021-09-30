@@ -1,4 +1,3 @@
-import os
 import typer
 from datetime import datetime
 
@@ -17,11 +16,12 @@ def get_greeting_message(chat_file: str) -> str:
 
 @app.command()
 def hello(name_file: str = typer.Option(..., '--name'), chat_file: str = typer.Option(..., '--chat')):
+    greeting_message: str = get_greeting_message(chat_file)
     with open(chat_file, 'a') as chat_stream:
         chat_stream.write('[{}]  Hi, {}! {}\n'.format(
             datetime.now(),
             get_name(name_file),
-            get_greeting_message(chat_file)
+            greeting_message
         ))
 
 
