@@ -187,15 +187,11 @@ With this file we have finished the packing of the project into MLCube! Now we c
 
 ### Project setup
 
-```bash
-# Create Python environment 
-virtualenv -p python3 ./env && source ./env/bin/activate
+## Project setup
 
-# Install MLCube and MLCube docker runner from GitHub repository
-# (normally, users will just run `pip install mlcube mlcube_docker`)
-git clone https://github.com/mlcommons/mlcube && cd mlcube/mlcube
-python setup.py bdist_wheel  && pip install --force-reinstall ./dist/mlcube-* && cd ..
-cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --force-reinstall --no-deps ./dist/mlcube_docker-* && cd ../../..
+```bash
+# Create Python environment and install MLCube Docker runner 
+virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker
 
 # Fetch the boston housing example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
