@@ -24,5 +24,9 @@ From: ubuntu:18.04
     requirements.txt /requirements.txt
     mnist.py /workspace/mnist.py
 
+    mlcube.yaml /mlcube/mlcube.yaml
+    workspace/data.yaml /mlcube/workspace/data.yaml
+    workspace/train.yaml /mlcube/workspace/train.yaml
+
 %runscript
     python /workspace/mnist.py "$@"

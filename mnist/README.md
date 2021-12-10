@@ -1,38 +1,34 @@
 # MNIST MLCube
 
-Proof-of-concept for MLCube configuration 2.0. Please, review the following:
+This example MLCube trains a simple neural network using MNIST dataset. Concretely, it implements two tasks:
 
-1. Local user configuration for docker (and other) runtime: [.mlcube.yaml](../.mlcube.yaml). This file here is for
-   example, and is not shipped with MLCubes in general. It contains common options for MLCube execution environments
-   common to all MLCubes. 
-2. New MLCube configuration file 2.0 [mlcube.yaml](../mlcube.py)
-3. The [mlcube.py](../mlcube.py) here simulates MLCube CLI. It is temporary stored here, and is part of MLCube library.
+- `download` task downloads MNIST dataset.
+- `train` trains a DL model.
 
-This modified MNIST example depends on latest version of docker runner located in this branch:
-```
-https://github.com/sergey-serebryakov/mlbox/tree/feature/configV2
-```
-
-I do not think it's worth spending time now trying to reproduce results, but in case it's required:
-1. Clone that branch.
-2. Create virtual environment with python >= 3.6.
-3. Export PYTHONPATH variable. Only mlcube_docker is requried to be present.
-4. Install mlcube dependencies (mlcube/requirements.txt) and omegaconf
-5. Run this example:
-   ```bash
-   python mlcube.py show_config --mlcube=./mnist --platform=docker --resolve
-   python mlcube.py run --mlcube ./mnist --task download --platform docker
-   python mlcube.py run --mlcube ./mnist --task train --platform docker
-   ```
-
-The example implementation uses OmegaConf, so users can use configuration variables:
 ```shell
-$ mlcube run ... --workspace=/nfs/workspace/mnist
-# workspace: /nfs/workspace/mnist
+# Create python virtual environment
+virtualenv -p python3 ./env && source ./env/bin/activate
 
-$ mlcube run ... --workspace='/nfs/workspace/${name}'
-# workspace: /nfs/workspace/mnist
+# Install MLCube and MLCube docker/singularity runners
+pip install mlcube mlcube-docker mlcube-singularity
 
-$ mlcube run ... --workspace='~/.mlcube/workspace/${name}'
-# workspace: /home/developer/.mlcube/workspace/mnist
+# Show installed MLCube runners
+mlcube config --get runners
+
+# Show platform configurations. A platform is a configured instance of a runner.
+mlcube config --get platforms
+
+# Clone MLCube examples and go to MNIST root directory
+git clone https://github.com/mlcommons/mlcube_examples.git && cd ./mlcube_examples/mnist
+
+# Show MLCube overview
+mlcube describe --mlcube .
+
+# Show MLCube and MLCube docker and singularity configurations
+mlcube show_config --resolve --mlcube . --platform docker
+mlcube show_config --resolve --mlcube . --platform singularity
+
+# Download data and train a model using default docker platform.
+mlcube run --mlcube . --task download --platform docker
+mlcube run --mlcube . --task train --platform docker
 ```

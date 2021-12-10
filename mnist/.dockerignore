@@ -1,1 +1,6 @@
+# Ignore everything in workspace directory
 workspace/
+
+# except these two configuration files
+!/workspace/data.yaml
+!/workspace/train.yaml
