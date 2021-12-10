@@ -15,7 +15,7 @@ docker:
   image: mlcommons/mnist:0.0.1
 
 singularity:
-  image: mnist-0.0.1.simg
+  image: mnist-0.0.1.sif
 
 tasks:
   download:

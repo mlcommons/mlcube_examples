@@ -19,4 +19,9 @@ COPY requirements.txt /requirements.txt
 RUN pip3 install --no-cache-dir -r /requirements.txt
 
 COPY mnist.py /workspace/mnist.py
+
+COPY mlcube.yaml /mlcube/mlcube.yaml
+COPY workspace/data.yaml /mlcube/workspace/data.yaml
+COPY workspace/train.yaml /mlcube/workspace/train.yaml
+
 ENTRYPOINT ["python3", "/workspace/mnist.py"]
