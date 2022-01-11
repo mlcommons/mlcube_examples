@@ -1,0 +1,22 @@
+name: MLCommons Brats
+description: MLCommons Brats integration
+authors: 
+ - {name: "MLCommons Best Practices Working Group"}
+
+platform:
+  accelerator_count: 0
+
+docker:
+  # Image name.
+  image: mlcommons/brats_cpu:0.0.1
+  # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_context: "."
+  # Docker file name within docker build context, default is `Dockerfile`.
+  build_file: "Dockerfile_CPU"
+
+tasks:
+  run:
+  # Run implementation
+    parameters:
+      inputs: {data_dir: data/}
+      outputs: {results_dir: data/results/}
