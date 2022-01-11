@@ -12,7 +12,7 @@ docker:
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
   build_context: "."
   # Docker file name within docker build context, default is `Dockerfile`.
-  build_file: "Dockerfile_GPU"
+  build_file: "Dockerfile_CUDA"
 
 tasks:
   run:
