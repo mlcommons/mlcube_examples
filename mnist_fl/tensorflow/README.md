@@ -16,8 +16,7 @@ cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --forc
 ## Clone MLCube examples and go to mnist_fl directory
 
 ```bash
-git clone https://github.com/mlcommons/mlcube_examples.git && cd ./mlcube_examples
-cd ./mnist_fl/tensorflow
+git clone https://github.com/mlcommons/mlcube_examples.git && cd ./mlcube_examples/mnist_fl/tensorflow
 ```
 
 ## Run MNIST MLCube on a local machine with Docker runner
