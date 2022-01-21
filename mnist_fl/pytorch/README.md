@@ -1,4 +1,4 @@
-# MLCube + OpenFL: Mnist example - Tensorflow
+# MLCube + FL: Mnist example - Pytorch
 
 ## Project setup
 
@@ -13,12 +13,10 @@ python setup.py bdist_wheel  && pip install --force-reinstall ./dist/mlcube-* &&
 cd ./runners/mlcube_docker && python setup.py bdist_wheel  && pip install --force-reinstall --no-deps ./dist/mlcube_docker-* && cd ../../..
 ```
 
-## Clone MLCube examples and go to mnist_openfl directory
+## Clone MLCube examples and go to mnist_fl directory
 
 ```bash
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples
-git fetch origin pull/33/head:feature/openfl && git checkout feature/openfl
-cd ./mnist_openfl/tensorflow
+git clone https://github.com/mlcommons/mlcube_examples.git && cd ./mlcube_examples/mnist_fl/pytorch
 ```
 
 ## Run MNIST MLCube on a local machine with Docker runner
