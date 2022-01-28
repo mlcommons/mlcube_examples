@@ -14,8 +14,8 @@ virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-d
 
 # Fetch the boston housing example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/39/head:feature/brats && git checkout feature/brats
-cd ./brats
+git fetch origin pull/41/head:feature/brats_2020 && git checkout feature/brats_2020
+cd ./brats_challenge
 ```
 
 ## Task execution
