@@ -1,0 +1,27 @@
+name: MLCommons BraTS challange
+description: MLCommons BraTS challange MLCube implementation
+authors: 
+ - {name: "MLCommons Best Practices Working Group"}
+
+platform:
+  accelerator_count: 0
+
+docker:
+  # Image name.
+  image: mlcommons/brats_challange:0.0.1
+  # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_context: "."
+  # Docker file name within docker build context, default is `Dockerfile`.
+  build_file: "Dockerfile"
+
+tasks:
+  train:
+  # Train model
+    parameters:
+      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
+      outputs: {log_dir: train_logs/, metrics: {type: file, default: metrics/train_metrics.json}, model_dir: model/}
+  inference:
+  # evaluate model
+    parameters:
+      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
+      outputs: {log_dir: evaluate_logs/, metrics: {type: file, default: metrics/evaluate_metrics.json}}
