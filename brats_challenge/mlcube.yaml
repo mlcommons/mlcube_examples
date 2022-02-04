@@ -18,10 +18,10 @@ tasks:
   train:
   # Train model
     parameters:
-      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
-      outputs: {log_dir: train_logs/, metrics: {type: file, default: metrics/train_metrics.json}, model_dir: model/}
+      inputs: {data_dir: data/, parameters_file: {type: file, default: parameters.yaml}}
+      outputs: {output_dir: output/}
   inference:
   # evaluate model
     parameters:
-      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
+      inputs: {data_dir: data/, parameters_file: {type: file, default: parameters.yaml}, model_in: model/}
       outputs: {log_dir: evaluate_logs/, metrics: {type: file, default: metrics/evaluate_metrics.json}}

@@ -8,4 +8,6 @@ RUN pip3 install -r requirements.txt
 
 COPY ./implementation /workspace
 
+RUN chmod +x /workspace/run.sh
+
 ENTRYPOINT ["python3", "/workspace/mlcube.py"]
