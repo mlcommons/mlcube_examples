@@ -95,10 +95,16 @@ In the `utilities.py` file you can add some functions that will be useful for yo
 ## Tasks execution
 
 ```bash
-# Run implementation with CPU support.
+# Run example task with CPU support.
+mlcube run --mlcube=mlcube_cpu.yaml --task=example
+
+# Run main task with CPU support.
 mlcube run --mlcube=mlcube_cpu.yaml --task=run
 
-# Run implementation with GPU support.
+# Run example task with GPU support.
+mlcube run --mlcube=mlcube_gpu.yaml --task=example
+
+# Run main task with GPU support.
 mlcube run --mlcube=mlcube_gpu.yaml --task=run
 ```
 
