@@ -36,6 +36,11 @@ These are the most important files on this project:
 └── workspace
     └── parameters.yaml  # File containing all extra parameters.
 ```
+
+## Project workflow
+
+![MLCube workflow](https://i.imgur.com/qXRp3Tb.png)
+
 ## How to modify this project
 
 You can change each file describe above in order to add your own umplementation.
