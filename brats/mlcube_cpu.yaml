@@ -15,8 +15,13 @@ docker:
   build_file: "Dockerfile_CPU"
 
 tasks:
+  example:
+  # Run implementation
+    parameters:
+      inputs: {parameters_file: {type: file, default: parameters.yaml}}
+
   run:
   # Run implementation
     parameters:
-      inputs: {data_dir: data/}
-      outputs: {results_dir: data/results/}
+      inputs: {input_folder: data/, parameters_file: {type: file, default: parameters.yaml}}
+      outputs: {output_folder: data/results/}

@@ -1,4 +1,4 @@
-# for a CPU app use this Dockerfile, delete the Dockerfile_CUDA then.
+# for a CPU app use this Dockerfile.
 FROM python:3.8-buster
 
 # fill in your info here
@@ -19,4 +19,4 @@ RUN pip3 install -r requirements.txt
 # copy all files
 COPY ./ ./
 
-ENTRYPOINT [ "python3","-u", "run.py"]
+ENTRYPOINT [ "python3", "mlcube.py"]

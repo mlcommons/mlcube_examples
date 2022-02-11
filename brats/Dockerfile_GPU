@@ -1,4 +1,4 @@
-# for a GPU app use this Dockerfile, delete the Dockerfile_CPU then.
+# for a GPU app use this Dockerfile.
 FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
 
 # fill in your info here
@@ -24,4 +24,4 @@ RUN pip3 install -r requirements.txt
 COPY ./ ./
 RUN pip3 install -U python-dotenv
 
-ENTRYPOINT [ "python3","-u", "run.py"]
+ENTRYPOINT [ "python3", "mlcube.py"]

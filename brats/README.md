@@ -18,6 +18,75 @@ git fetch origin pull/39/head:feature/brats && git checkout feature/brats
 cd ./brats
 ```
 
+## Important files
+
+These are the most important files on this project:
+
+```bash
+├── Dockerfile_CPU       # Docker file with instructions to create the image with for CPU version.
+├── Dockerfile_GPU      # Docker file with instructions to create the image with for CPU version.
+├── mlcube.py            # Python entrypoint used by MLCube, contains the logic for MLCube tasks.
+├── mlcube_cpu.yaml      # MLCube CPU configuration, defines the project, author, platform, docker and tasks.
+├── mlcube_gpu.yaml      # MLCube GPU configuration, here the difference is the target dockerfile.
+├── requirements.txt     # Python requirements needed to run the project inside Docker.
+├── src                     
+│   ├── my_logic.py      # Python file that contains the main logic of the project.
+│   └── utils   
+│       └── utilities.py # Python utilities file that store useful functions.
+└── workspace
+    └── parameters.yaml  # File containing all extra parameters.
+```
+## How to modify this project
+
+You can change each file describe above in order to add your own umplementation.
+
+### Requirements file
+
+In this file (`requirements.txt`) you can add all the python dependencies needed for running your implementation, this dependencies will be install during the creating of the docker image, this happens when you run the ```mlcube run ...``` command.
+### Dockerfile
+
+You can use both, CPU or GPU version for the dockerfile (`Dockerfile_CPU`, `Dockerfile_GPU`), also, you can add or modify any steps inside the file, this comes handy when you need to install some OS dependencies or even when you want to change the base docker image, inside the file you can find some information about the existing steps.
+
+
+### Parameters file
+
+This is a yaml file (`parameters.yaml`)that contains all extra parameters that are not files or directories, for example, here you can place all the hyperparameters that you will use for training a model. This file will be pass as a **input parameter** in the MLCube tasks and then it will be read inside the MLCube container.
+
+### MLCube yaml file
+
+In these files (`mlcube_cpu`, `mlcube_gpu`) you can find the instructions about the docker image and platform that wil be used, information about the project (name, description, authors), and also the tasks defined for the project.
+
+In the existing implementation you will find 2 tasks:
+
+* example:
+
+    It only takes one input parameter: parameters file.
+    This task read one specific parameters from the parameters file () and then print the value of the parameter.
+
+* run:
+
+    This task take the followin parameters:
+
+    * Input parameters:
+        * input_folder: folder path containing input data
+        * parameters_file: Extra parameters
+    * Output parameters:
+        * output_folder: folder path where output data will be stored
+    
+    This task take the input data, "process it" and then save the output result in the output_folder, it also prints some information from the extra parameters.
+
+
+### MLCube python file
+
+The `mlcube.py` file is the handler file and entrypoint described in the dockerfile, here you can find all the logic related on how to process each MLCube task. If you want to add a new task first you must define it inside the `mlcube.yaml` file with its input and output parameters and then you need to add the logic to handle this new task inside the `mlcube.py` file.
+
+### Main logic file
+
+The `my_logic.py` file contains the main logic of the project, you can modify this file and write your implementation here, this logic file is called from the `mlcube.py` file and there are other ways to link your implementation and shown in the [MLCube examples repo](https://github.com/mlcommons/mlcube_examples).
+
+### Utilities file
+
+In the `utilities.py` file you can add some functions that will be useful for your main implementation, in this case, the functions from the utilities file are used inside the main logic file.
 ## Tasks execution
 
 ```bash
