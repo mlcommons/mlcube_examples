@@ -52,7 +52,7 @@ if __name__ == '__main__':
         for row in reader:
             greetings.append(row[0]) 
 
-    full_greetings = hello_world(greetings, names)
+    full_greetings = hello_world(greetings, names, args.uppercase)
 
     with open(args.out, "w") as f:
         writer = csv.writer(f)
