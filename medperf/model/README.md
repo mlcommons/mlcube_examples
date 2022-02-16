@@ -115,11 +115,12 @@ If you want to adjust this template for your own use-case, then the following li
 6. Inside `/mlcube/workspace` add the data you want your model to use for inference
 7. Inside `/mlcube/workspace/additional_files` add any files that are required for model execution (e.g. model weights)
 8. Adjust `/mlcube/mlcube.yaml` so that:
-9. `data_path` points to the location where you expect data to be
-10. `parameters_file` should NOT be modified in any way
-11. remove demo `greetings` parameter
-12. Add any other required parameters that point to `additional_files` (e.g. model_weights). Naming can be arbitrary, but all files referenced from now on should be contained inside `additional_files`
-13. `output_path` should NOT be modified in any way
+   1. metadata such as `name`, `description`, `authors` and `image_name` are correctly assigned.
+   2. `data_path` points to the location where you expect data to be inside the `workspace` directory.
+   3. `parameters_file` should NOT be modified in any way.
+   4. remove demo `greetings` parameter.
+   5. Add any other required parameters that point to `additional_files` (e.g. model_weights). Naming can be arbitrary, but all files referenced from now on should be contained inside `additional_files`.
+   6. `output_path` should NOT be modified in any way.
 
 ## Requirements are negotiable
 The required fields in the mlcube task interface show what medperf currently assumes. As we are in alpha, this is a great time to raise concerns or requests about these requirements! Now is the best time for us to make changes.
