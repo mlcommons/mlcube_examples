@@ -21,7 +21,7 @@ tasks:
   infer:
     parameters:
       inputs: {
-        data_path: names.csv,                                   # Required. Where to find the data to run predictions on
+        data_path: names.csv,                               # Required. Where to find the data to run predictions on
         parameters_file: parameters.yaml,                   # Required. Helper file to provide additional arguments. Value MUST be parameters.yaml
         # If you need any additional files that should 
         # not be included inside the mlcube image, 
