@@ -7,6 +7,7 @@
 # Here, we show a way that requires minimal intrusion to the original code,
 # By running the application through subprocesses. 
 
+import os
 import yaml
 import typer
 import subprocess
@@ -42,8 +43,9 @@ def infer(
     with open(params_file, "r") as f:
         params = yaml.safe_load(f)
 
+    names_file = os.path.join(data_path, "names.csv")
     uppercase = params["uppercase"]
-    cmd = f"python3 app.py --names={data_path} --uppercase={uppercase} --greetings={greetings} --out={out_path}"
+    cmd = f"python3 app.py --names={names_file} --uppercase={uppercase} --greetings={greetings} --out={out_path}"
     exec_python(cmd)
 
 @app.command("hotfix")

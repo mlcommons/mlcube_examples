@@ -3,6 +3,7 @@
 # This script is unrelated to the MLCube interface. It could be run
 # independently without issues. It provides the actual implementation
 # of the app.
+import os
 import csv
 import argparse
 
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--names', dest="names", type=str, help="file containing names. CSV expected")
     parser.add_argument('--uppercase', dest="uppercase", type=bool, help="wether to return uppercase greetings")
     parser.add_argument('--greetings', dest="greetings", type=str, help="file containing greetings. CSV expected")
-    parser.add_argument('--out', dest="out", type=str, help="file to store resulting greetings")
+    parser.add_argument('--out', dest="out", type=str, help="path to store resulting greetings")
 
     args = parser.parse_args()
 
@@ -54,7 +55,8 @@ if __name__ == '__main__':
 
     full_greetings = hello_world(greetings, names, args.uppercase)
 
-    with open(args.out, "w") as f:
+    out_file = os.path.join(args.out, "predictions.csv")
+    with open(out_file, "w") as f:
         writer = csv.writer(f)
         writer.writerow(["id", "greeting"])
         for idx, full_greeting in enumerate(full_greetings):

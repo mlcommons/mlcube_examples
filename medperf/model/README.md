@@ -38,28 +38,28 @@ MLCubes usually share a similar folder structure and files. Here's a brief descr
 
 1. __`mlcube/mlcube.yaml`__: 
    
-   The `mlcube.yaml` file contains metadata about your model, including its interface. For MedPerf, we require an `infer` function that takes in (at minimum) arguments for `data_path` and `parameters_file` and produces `predictions.csv`. You see this definition in the mlcube.yaml file as:
+   The `mlcube.yaml` file contains metadata about your model, including its interface. For MedPerf, we require an `infer` function that takes in (at minimum) arguments for `data_path` and `parameters_file` and produces prediction artifacts inside the `output_path`. You see this definition in the mlcube.yaml file as:
 
     ```yml
     tasks:
-        # Model MLCubes require only a single task: `infer`.
-        # This task takes input data, as well as configuration parameters
-        # and/or extra artifacts, and generates predictions on the data
-        infer:
-            parameters:
+      # Model MLCubes require only a single task: `infer`.
+      # This task takes input data, as well as configuration parameters
+      # and/or extra artifacts, and generates predictions on the data
+      infer:
+         parameters:
             inputs: {
-                data_path: names.csv,                                   # Required. Where to find the data to run predictions on
-                parameters_file: parameters.yaml,                   # Required. Helper file to provide additional arguments. Value MUST be parameters.yaml
-                # If you need any additional files that should 
-                # not be included inside the mlcube image, 
-                # add them inside `additional_files` folder
-                # E.g. model weights
+               data_path: data,                                    # Required. Where to find the data to run predictions on. MUST be a folder
+               parameters_file: parameters.yaml,                   # Required. Helper file to provide additional arguments. Value MUST be parameters.yaml
+               # If you need any additional files that should 
+               # not be included inside the mlcube image, 
+               # add them inside `additional_files` folder
+               # E.g. model weights
 
-                # Toy Hello World example
-                greetings: additional_files/greetings.csv
+               # Toy Hello World example
+               greetings: additional_files/greetings.csv
             }
             outputs: {
-                output_path: {type: file, default: predictions.csv} # Required. Where to store predictions artifact. Value MUST be predictions.csv 
+               output_path: {type: directory, default: predictions} # Required. Where to store prediction artifacts. MUST be a folder
             }
 
     ```
@@ -105,8 +105,8 @@ MLCubes usually share a similar folder structure and files. Here's a brief descr
 ## How to modify
 If you want to adjust this template for your own use-case, then the following list serves as a step-by-step guide:
 1. Remove demo artifacts from `/mlcube/workspace`: 
-     - `/mlcube/workspace/names.csv`
-     - `/mlcube/workspace/predictions.csv`
+     - `/mlcube/workspace/data/*`
+     - `/mlcube/workspace/predictions/*`
      - `/mlcube/workspace/additional_files/greetings.csv`
 2. Pass your original code to the `/project` folder (removing `app.py`) 
 3. Adjust your code and the `/project/mlcube.py` file so that commands point to the respective code and receive the expected arguments
