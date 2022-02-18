@@ -1,4 +1,4 @@
-# BraTS Challenge 2020 - MLCube integration - Metrics
+# BraTS Challenge - MLCube integration - Metrics
 
 Original implementation: ["BraTS Instructions Repo"](https://github.com/BraTS/Instructions)
 
