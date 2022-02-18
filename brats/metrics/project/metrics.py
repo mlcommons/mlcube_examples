@@ -1,4 +1,4 @@
-"""Logic file"""
+"""Metrics file"""
 import argparse
 import glob
 import yaml
@@ -8,20 +8,21 @@ import numpy as np
 
 
 def dice_coef_metric(
-    probabilities: np.ndarray, truth: np.ndarray, treshold: float = 0.5, eps: float = 0
+    predictions: np.ndarray, truth: np.ndarray, treshold: float = 0.5, eps: float = 0
 ) -> np.ndarray:
     """
     Calculate Dice score for data batch.
     Params:
-        probobilities: model outputs after activation function.
+        predictions: model outputs after activation function.
         truth: truth values.
-        threshold: threshold for probabilities.
+        threshold: threshold for predictions.
         eps: additive to refine the estimate.
         Returns: dice score aka f1.
     """
+
     scores = []
-    num = probabilities.shape[0]
-    predictions = probabilities >= treshold
+    num = predictions.shape[0]
+    predictions = predictions >= treshold
     assert predictions.shape == truth.shape
     for i in range(num):
         prediction = predictions[i]
@@ -36,20 +37,21 @@ def dice_coef_metric(
 
 
 def jaccard_coef_metric(
-    probabilities: np.ndarray, truth: np.ndarray, treshold: float = 0.5, eps: float = 0
+    predictions: np.ndarray, truth: np.ndarray, treshold: float = 0.5, eps: float = 0
 ) -> np.ndarray:
     """
     Calculate Jaccard index for data batch.
     Params:
-        probobilities: model outputs after activation function.
+        predictions: model outputs after activation function.
         truth: truth values.
-        threshold: threshold for probabilities.
+        threshold: threshold for predictions.
         eps: additive to refine the estimate.
         Returns: jaccard score aka iou."
     """
+
     scores = []
-    num = probabilities.shape[0]
-    predictions = probabilities >= treshold
+    num = predictions.shape[0]
+    predictions = predictions >= treshold
     assert predictions.shape == truth.shape
 
     for i in range(num):
@@ -65,6 +67,7 @@ def jaccard_coef_metric(
 
 
 def preprocess_mask_labels(mask: np.ndarray):
+    """Preprocess the mask labels from a numpy array"""
 
     mask_WT = mask.copy()
     mask_WT[mask_WT == 1] = 1
@@ -88,12 +91,17 @@ def preprocess_mask_labels(mask: np.ndarray):
 
 
 def load_img(file_path):
+    """Reads segmentations image as a numpy array"""
+
     data = nib.load(file_path)
     data = np.asarray(data.dataobj)
     return data
 
 
 def get_data_arr(predictions_path, ground_truth_path):
+    """Reads the content for the predictions and ground truth folders
+    and then returns the data in numpy array format"""
+
     predictions = glob.glob(predictions_path + "/*")
     ground_truth = glob.glob(ground_truth_path + "/*")
     if not len(predictions) == len(ground_truth):
@@ -114,11 +122,14 @@ def get_data_arr(predictions_path, ground_truth_path):
 
 
 def create_metrics_file(output_file, results):
+    """Writes metrics to an output yaml file"""
     with open(output_file, "w") as f:
         yaml.dump(results, f)
 
 
 def main():
+    """Main function that recieves input parameters and calculate metrics"""
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--ground_truth",

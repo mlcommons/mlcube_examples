@@ -7,11 +7,8 @@ import subprocess
 app = typer.Typer()
 
 
-class EvaluateTask(object):
-    """Runs evaluation metrics given the predictions and label files
-    Args:
-        object ([type]): [description]
-    """
+class EvaluateTask:
+    """Runs evaluation metrics given the predictions and ground truth files"""
 
     @staticmethod
     def run(
