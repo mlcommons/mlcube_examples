@@ -27,12 +27,12 @@ class InferTask(object):
     """Run task Class
     It defines the environment variables:
         data_path: Directory path to dataset
-        output_folder: Directory path to final results
+        output_path: Directory path to final results
         All other parameters are defined in parameters_file
     Then executes the run_code method inside my_logic script"""
 
     @staticmethod
-    def run(data_path: str, output_folder: str, parameters_file: str) -> None:
+    def run(data_path: str, output_path: str, parameters_file: str) -> None:
 
         # Load parameters from the paramters file
         with open(parameters_file, "r") as stream:
@@ -40,7 +40,7 @@ class InferTask(object):
 
         application_name = parameters["APPLICATION_NAME"]
         application_version = parameters["APPLICATION_VERSION"]
-        run_code(data_path, output_folder, application_name, application_version)
+        run_code(data_path, output_path, application_name, application_version)
 
 
 @app.command("example")
@@ -51,10 +51,10 @@ def example(parameters_file: str = typer.Option(..., "--parameters_file")):
 @app.command("infer")
 def infer(
     data_path: str = typer.Option(..., "--data_path"),
-    output_folder: str = typer.Option(..., "--output_folder"),
+    output_path: str = typer.Option(..., "--output_path"),
     parameters_file: str = typer.Option(..., "--parameters_file")
 ):
-    InferTask.run(data_path, output_folder, parameters_file)
+    InferTask.run(data_path, output_path, parameters_file)
 
 
 if __name__ == "__main__":

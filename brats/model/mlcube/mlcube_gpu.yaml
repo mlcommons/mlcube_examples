@@ -24,4 +24,4 @@ tasks:
   # Run implementation
     parameters:
       inputs: {data_path: data/, parameters_file: parameters.yaml}
-      outputs: {output_folder: data/results/}
+      outputs: {output_path: data/results/}
