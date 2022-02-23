@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER MLPerf MLBox Working Group
 
 # Remove all stopped containers: docker rm $(docker ps -a -q)
