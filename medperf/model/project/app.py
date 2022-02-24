@@ -32,9 +32,9 @@ def hello_world(greetings, names, uppercase=False):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("MedPerf Model Hello World Example")
-    parser.add_argument('--names', dest="names", type=str, help="file containing names. CSV expected")
+    parser.add_argument('--names', dest="names", type=str, help="directory containing names")
     parser.add_argument('--uppercase', dest="uppercase", type=bool, help="wether to return uppercase greetings")
-    parser.add_argument('--greetings', dest="greetings", type=str, help="file containing greetings. CSV expected")
+    parser.add_argument('--greetings', dest="greetings", type=str, help="directory containing greetings")
     parser.add_argument('--out', dest="out", type=str, help="path to store resulting greetings")
 
     args = parser.parse_args()
