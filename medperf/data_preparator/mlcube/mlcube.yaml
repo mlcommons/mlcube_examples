@@ -20,12 +20,12 @@ tasks:
   # expected by the model cubes. 
     parameters:
       inputs: {
-        data_path: names.txt,            # Required. Value must point to the location of the raw data inside workspace
-        labels_path: labels.csv,         # Required. Value must point to the file containing labels for the data
+        data_path: names/,            # Required. Value must point to a directory containing the raw data inside workspace
+        labels_path: labels/,         # Required. Value must point to a directory containing labels for the data
         parameters_file: parameters.yaml # Required. Value must be `parameters.yaml`
       }
       outputs: {
-        output_path: data/               # Required. Indicates where to store the transformed data
+        output_path: data/               # Required. Indicates where to store the transformed data. Must contain transformed data and labels
       }
   sanity_check:
   # This task ensures that the previously transformed data was transformed correctly.
