@@ -5,7 +5,7 @@ This is a Hello World implementation, following the structure and conventions Me
 At the time of writing, model MLCubes have the only purpose of obtaining predictions on data. This means that we expect all models inside MedPerf to already be trained. 
 
 ## How to run:
-This is a working template, which means it should work out-of-the-box. Follow the next steps:
+This template was built so it can work out-of-the-box. Follow the next steps:
 
 1. Clone the repository
 2. cd to the repository
@@ -28,7 +28,7 @@ This is a working template, which means it should work out-of-the-box. Follow th
    ```
 6. check resulting predictions
    ```bash
-   cat workspace/predictions.csv
+   cat workspace/predictions/predictions.csv
    ```
 That's it! You just built and ran a hello-world model mlcube!
 
