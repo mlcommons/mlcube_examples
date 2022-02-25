@@ -2,7 +2,6 @@
 import argparse
 import glob
 import yaml
-from pkgutil import get_data
 import nibabel as nib
 import numpy as np
 

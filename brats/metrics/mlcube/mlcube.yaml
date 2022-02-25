@@ -18,5 +18,9 @@ tasks:
   evaluate:
   # Executes a number of metrics specified by the params file
     parameters:
-      inputs: {predictions: data/predictions/, ground_truth: data/ground_truth/, parameters_file: parameters.yaml}
+      inputs: {
+        predictions: data/predictions/,
+        ground_truth: data/ground_truth/,
+        parameters_file: parameters.yaml
+      }
       outputs: {output_path: {type: "file", default: "results.yaml"}}

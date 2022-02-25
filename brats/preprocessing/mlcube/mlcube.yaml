@@ -1,0 +1,22 @@
+name: MLCommons Brats preprocessing
+description: MLCommons Brats integration for preprocessing
+authors: 
+ - {name: "MLCommons Best Practices Working Group"}
+
+platform:
+  accelerator_count: 0
+
+docker:
+  # Image name.
+  image: mlcommons/brats_preprocessing:0.0.1
+  # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_context: "../project"
+  # Docker file name within docker build context, default is `Dockerfile`.
+  build_file: "Dockerfile"
+
+tasks:
+  preprocess:
+  # Run preprocessing
+    parameters:
+      inputs: {data_path: data/, parameters_file: parameters.yaml}
+      outputs: {output_path: results/}
