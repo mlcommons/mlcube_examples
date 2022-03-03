@@ -12,21 +12,24 @@ This template was built so it can work out-of-the-box. Follow the next steps:
    ```bash
    cd mlcube_examples
    ```
-3. Install mlcube and mlcube-docker
-
+3. Create and activate virtual environment
+   ```bash
+   conda create -n venv_mlcub python=3.7 -y # change to your prefered python version
+   conda activate venv_mlcub
+   ```
+4. Install mlcube and mlcube-docker
    ```bash
    pip install mlcube mlcube-docker
    ```
-4. cd to current example's `mlcube` folder
-
+5. cd to current example's `mlcube` folder
    ```bash
    cd medperf/model/mlcube
    ```
-5. execute the `infer` task with mlcube
+6. execute the `infer` task with mlcube
    ```bash
    mlcube run --task=infer
    ```
-6. check resulting predictions
+7. check resulting predictions
    ```bash
    cat workspace/predictions/predictions.csv
    ```
