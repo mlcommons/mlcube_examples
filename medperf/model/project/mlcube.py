@@ -45,7 +45,9 @@ def infer(
 
     names_file = os.path.join(data_path, "names.csv")
     uppercase = params["uppercase"]
-    cmd = f"python3 app.py --names={names_file} --uppercase={uppercase} --greetings={greetings} --out={out_path}"
+    cmd = f"python3 app.py --names={names_file} --greetings={greetings} --out={out_path}"
+    if uppercase:
+        cmd += f" --uppercase={uppercase}"
     exec_python(cmd)
 
 @app.command("hotfix")
