@@ -8,7 +8,7 @@ platform:
 
 docker:
   # Image name.
-  image: medical-data-prep-hello-world
+  image: mlcommons/medical-data-prep-hello-world
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
   build_context: "../project"
   # Docker file name within docker build context, default is `Dockerfile`.
