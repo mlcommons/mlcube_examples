@@ -8,20 +8,21 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
             software-properties-common \
             python3-dev \
-	    wget \
-	    cmake \
-	    g++-4.8 \
-	    git \
-	    vim \
- 	    ca-certificates \
-	    libibverbs1 \
-	    librdmacm1 \
+            wget \
+            cmake \
+            g++-4.8 \
+            git \
+            vim \
+            ca-certificates \
+            libibverbs1 \
+            librdmacm1 \
       	    ibverbs-providers \
-	    build-essential \
+            build-essential \
             curl && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
+# Ubuntu 18.04 provides python 3.6
+RUN curl -fSsL -O https://bootstrap.pypa.io/pip/3.6/get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py
 
@@ -30,7 +31,7 @@ RUN mkdir /tmp/openmpi && \
     cd /tmp/openmpi && \
     wget https://www.open-mpi.org/software/ompi/v4.0/downloads/openmpi-4.0.0.tar.gz && \
     tar zxf openmpi-4.0.0.tar.gz && \
-    cd openmpi-4.0.0 && \    
+    cd openmpi-4.0.0 && \
     ./configure --enable-orterun-prefix-by-default && \
     make -j $(nproc) all && \
     make install && \
