@@ -8,7 +8,8 @@ RUN apt-get update && \
             curl && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -fSsL -O https://bootstrap.pypa.io/get-pip.py && \
+# Ubuntu 18.04 provides python 3.6
+RUN curl -fSsL -O https://bootstrap.pypa.io/pip/3.6/get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py
 
