@@ -26,9 +26,10 @@ class PreprocessTask:
         process.wait()
 
 
-@app.command("preprocess")
-def preprocess(
+@app.command("prepare")
+def prepare(
     data_path: str = typer.Option(..., "--data_path"),
+    labels_path: str = typer.Option(..., "--labels_path"),
     parameters_file: str = typer.Option(..., "--parameters_file"),
     output_path: str = typer.Option(..., "--output_path"),
 ):
