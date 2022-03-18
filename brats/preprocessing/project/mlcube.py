@@ -1,6 +1,7 @@
 """MLCube handler file"""
 import os
 import typer
+import yaml
 import subprocess
 
 
@@ -42,6 +43,18 @@ def sanity_check(
     parameters_file: str = typer.Option(..., "--parameters_file"),
 ):
     pass
+
+@app.command("statistics")
+def statistics(
+    data_path: str = typer.Option(..., "--data_path"),
+    parameters_file: str = typer.Option(..., "--parameters_file"),
+    output_path: str = typer.Option(..., "--output_path")
+):
+    stats = {
+        "stat": 1
+    }
+    with open(output_path, "w") as f:
+        yaml.dump(stats, f)
 
 
 if __name__ == "__main__":
