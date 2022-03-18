@@ -36,8 +36,11 @@ def prepare(
     PreprocessTask.run(data_path, parameters_file, output_path)
 
 
-@app.command("test")
-def test():
+@app.command("sanity_check")
+def sanity_check(
+    data_path: str = typer.Option(..., "--data_path"),
+    parameters_file: str = typer.Option(..., "--parameters_file"),
+):
     pass
 
 
