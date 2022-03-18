@@ -21,6 +21,6 @@ tasks:
       inputs: {data_path: data/, labels_path: {type: file, default: labels.csv},  parameters_file: {type: file, default: parameters.yaml}}
       outputs: {output_path: results/}
 
-sanity_check:
-    parameters:
-      inputs: {data_path: data/, parameters_file: parameters.yaml}
+  sanity_check:
+      parameters:
+        inputs: {data_path: data/, parameters_file: {type: file, default: parameters.yaml}}
