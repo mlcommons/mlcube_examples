@@ -12,7 +12,7 @@ docker:
   # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
   build_context: "../project"
   # Docker file name within docker build context, default is `Dockerfile`.
-  build_file: "Dockerfile_CPU"
+  build_file: "Dockerfile"
 
 tasks:
   example:
