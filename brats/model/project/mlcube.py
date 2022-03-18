@@ -56,7 +56,8 @@ def infer(
     parameters_file: str = typer.Option(..., "--parameters_file")
 ):
     filename = "BraTS_example_seg.nii.gz"
-    shutil.copyfile(data_path+filename, output_path+filename)
+    shutil.copyfile(os.path.join(data_path, filename), os.path.join(output_path, filename))
+    print("Done!")
 
 
 if __name__ == "__main__":
