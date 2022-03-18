@@ -20,7 +20,7 @@ tasks:
     parameters:
       inputs: {
         predictions: data/predictions/,
-        ground_truth: data/ground_truth/,
-        parameters_file: parameters.yaml
+        labels: data/ground_truth/,
+        parameters_file: {type: file, default: parameters.yaml}
       }
       outputs: {output_path: {type: "file", default: "results.yaml"}}

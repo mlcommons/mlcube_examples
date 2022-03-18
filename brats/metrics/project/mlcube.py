@@ -1,5 +1,6 @@
 """MLCube handler file"""
 import os
+import yaml
 import typer
 import subprocess
 
@@ -23,12 +24,16 @@ class EvaluateTask:
 
 @app.command("evaluate")
 def evaluate(
-    ground_truth: str = typer.Option(..., "--ground_truth"),
+    labels: str = typer.Option(..., "--labels"),
     predictions: str = typer.Option(..., "--predictions"),
     parameters_file: str = typer.Option(..., "--parameters_file"),
     output_path: str = typer.Option(..., "--output_path"),
 ):
-    EvaluateTask.run(ground_truth, predictions, parameters_file, output_path)
+    stats = {
+        "stat": 1
+    }
+    with open(output_path, "w") as f:
+        yaml.dump(stats, f)
 
 
 @app.command("test")
