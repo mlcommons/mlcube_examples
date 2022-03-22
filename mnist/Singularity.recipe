@@ -13,8 +13,8 @@ From: ubuntu:18.04
     rm -rf /var/lib/apt/lists/*
     ln -s /usr/bin/python3 /usr/local/bin/python
 
-    # Install latest pip3 package, 'setuptools' and 'wheel'.
-    curl -fSsL -O https://bootstrap.pypa.io/get-pip.py
+    # Install latest pip3 package for Ubuntu 18:04, 'setuptools' and 'wheel'.
+    curl -fSsL -O https://bootstrap.pypa.io/pip/3.6/get-pip.py
     python3 get-pip.py
     rm get-pip.py
 
