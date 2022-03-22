@@ -9,7 +9,7 @@ app = typer.Typer()
 
 
 class PreprocessTask:
-    """Runs preprocessing given the input data path"""
+    """Run preprocessing given the input data path"""
 
     @staticmethod
     def run(
@@ -24,6 +24,35 @@ class PreprocessTask:
         })
 
         process = subprocess.Popen("./run.sh", cwd=".", env=env)
+        process.wait()
+
+class SanityCheckTask:
+    """Run sanity check"""
+
+    @staticmethod
+    def run(
+        data_path: str, parameters_file: str
+    ) -> None:
+
+        cmd = f"python3 sanity_check.py --data_path={data_path}"
+        splitted_cmd = cmd.split()
+
+        process = subprocess.Popen(splitted_cmd, cwd=".")
+        process.wait()
+
+
+class StatisticsTask:
+    """Run statistics"""
+
+    @staticmethod
+    def run(
+        data_path: str, parameters_file: str, output_path: str
+    ) -> None:
+
+        cmd = f"python3 statistics.py --data_path={data_path} --out_file={output_path}"
+        splitted_cmd = cmd.split()
+
+        process = subprocess.Popen(splitted_cmd, cwd=".")
         process.wait()
 
 
@@ -42,7 +71,7 @@ def sanity_check(
     data_path: str = typer.Option(..., "--data_path"),
     parameters_file: str = typer.Option(..., "--parameters_file"),
 ):
-    pass
+    SanityCheckTask.run(data_path, parameters_file)
 
 @app.command("statistics")
 def statistics(
@@ -50,11 +79,7 @@ def statistics(
     parameters_file: str = typer.Option(..., "--parameters_file"),
     output_path: str = typer.Option(..., "--output_path")
 ):
-    stats = {
-        "stat": 1
-    }
-    with open(output_path, "w") as f:
-        yaml.dump(stats, f)
+    StatisticsTask.run(data_path, parameters_file, output_path)
 
 
 if __name__ == "__main__":
