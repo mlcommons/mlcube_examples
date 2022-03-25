@@ -29,11 +29,7 @@ def evaluate(
     parameters_file: str = typer.Option(..., "--parameters_file"),
     output_path: str = typer.Option(..., "--output_path"),
 ):
-    stats = {
-        "stat": 1
-    }
-    with open(output_path, "w") as f:
-        yaml.dump(stats, f)
+    EvaluateTask.run(labels, predictions, parameters_file, output_path)
 
 
 @app.command("test")
