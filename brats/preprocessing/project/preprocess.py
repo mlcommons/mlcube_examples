@@ -5,6 +5,7 @@ import glob
 import yaml
 import numpy as np
 import nibabel as nib
+from shutil import copyfile
 from tqdm import tqdm
 
 
@@ -95,6 +96,9 @@ def main():
     images_arr = get_data_arr(args.data_path)
     save_processed_data(args.output_path, params["output_filename"], images_arr)
 
+    input_file = os.path.normpath(args.data_path + "/BraTS_example_seg.nii.gz")
+    output_file = os.path.normpath(args.output_path + "/BraTS_example_seg.nii.gz")
+    copyfile(input_file, output_file)
 
 if __name__ == "__main__":
     main()

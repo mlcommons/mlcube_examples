@@ -16,14 +16,11 @@ class PreprocessTask:
         data_path: str, parameters_file: str, output_path: str
     ) -> None:
 
-        env = os.environ.copy()
-        env.update({
-            'data_path': data_path,
-            'parameters_file': parameters_file,
-            'output_path': output_path
-        })
+        cmd = f"python3 preprocess.py --data_path={data_path} \
+            --parameters_file {parameters_file} --output_path {output_path}"
+        splitted_cmd = cmd.split()
 
-        process = subprocess.Popen("./run.sh", cwd=".", env=env)
+        process = subprocess.Popen(splitted_cmd, cwd=".")
         process.wait()
 
 class SanityCheckTask:
