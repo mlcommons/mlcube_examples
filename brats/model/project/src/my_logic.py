@@ -6,8 +6,8 @@ from src.utils.utilities import helper
 
 def logic_wrapper(input_folder, output_folder):
     """Edit your logic here"""
-    input_file = os.path.normpath(input_folder + "/something_t1.nii.gz")
-    output_file = os.path.normpath(output_folder + "/something_seg.nii.gz")
+    input_file = os.path.normpath(input_folder + "/BraTS_example_seg.nii.gz")
+    output_file = os.path.normpath(output_folder + "/BraTS_example_seg.nii.gz")
 
     # copy paste your logic here
     print("wrapper: Here you can place your own logic")

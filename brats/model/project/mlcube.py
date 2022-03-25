@@ -1,6 +1,4 @@
 """MLCube handler file"""
-import os
-import shutil
 import typer
 import yaml
 from src.my_logic import run_code
@@ -55,9 +53,7 @@ def infer(
     output_path: str = typer.Option(..., "--output_path"),
     parameters_file: str = typer.Option(..., "--parameters_file")
 ):
-    filename = "BraTS_example_seg.nii.gz"
-    shutil.copyfile(os.path.join(data_path, filename), os.path.join(output_path, filename))
-    print("Done!")
+    InferTask.run(data_path, output_path, parameters_file)
 
 
 if __name__ == "__main__":
