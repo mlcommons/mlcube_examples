@@ -12,16 +12,31 @@ docker:
 tasks:
   download:
     parameters:
-      outputs: {raw_data_dir: raw_data/, log_dir: logs/}
+      outputs:
+        raw_data_dir: {type: directory, default: raw_data}
+        log_dir: {type: directory, default: logs}
   preprocess:
     parameters:
-      inputs: {raw_data_dir: raw_data/}
-      outputs: {data_dir: data/, log_dir: logs/}
+      inputs:
+        raw_data_dir: {type: directory, default: raw_data}
+      outputs:
+        data_dir: {type: directory, default: data}
+        log_dir: {type: directory, default: logs}
   train:
     parameters:
-      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml}
-      outputs: {model_dir: model/, output_dir: output/, log_dir: logs/}
+      inputs:
+        data_dir: {type: directory, default: data}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+      outputs:
+        model_dir: {type: directory, default: model}
+        output_dir: {type: directory, default: output}
+        log_dir: {type: directory, default: logs}
   test:
     parameters:
-      inputs: {data_dir: data/, model_dir: model/, parameters_file: parameters/default.parameters.yaml}
-      outputs: {output_dir: output/, log_dir: logs/}
+      inputs:
+        data_dir: {type: directory, default: data}
+        model_dir: {type: directory, default: model}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+      outputs:
+        output_dir: {type: directory, default: output}
+        log_dir: {type: directory, default: logs}
