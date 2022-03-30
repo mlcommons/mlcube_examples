@@ -22,10 +22,21 @@ tasks:
   train:
   # Train model
     parameters:
-      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
-      outputs: {log_dir: train_logs/, metrics: {type: file, default: metrics/train_metrics.json}, model_dir: model/}
+      inputs:
+        data_dir: {type: directory, default: data}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+        model_in: {type: directory, default: model}
+      outputs:
+        log_dir: {type: directory, default: train_logs}
+        metrics: {type: file, default: metrics/train_metrics.json}
+        model_dir: {type: directory, default: model}
   evaluate:
   # evaluate model
     parameters:
-      inputs: {data_dir: data/, parameters_file: parameters/default.parameters.yaml, model_in: model/}
-      outputs: {log_dir: evaluate_logs/, metrics: {type: file, default: metrics/evaluate_metrics.json}}
+      inputs:
+        data_dir: {type: directory ,default: data}
+        parameters_file: {type: file, default: parameters/default.parameters.yaml}
+        model_in: {type: directory, default: model}
+      outputs:
+        log_dir: {type: directory, default: evaluate_logs}
+        metrics: {type: file, default: metrics/evaluate_metrics.json}
