@@ -24,13 +24,11 @@ These are the most important files on this project:
 
 ```bash
 ├── mlcube
-│   ├── mlcube_cpu.yaml      # MLCube CPU configuration, defines the project, author, platform, docker and tasks.
-│   ├── mlcube_gpu.yaml      # MLCube GPU configuration, here the difference is the target dockerfile.
+│   ├── mlcube.yaml      # MLCube configuration, defines the project, author, platform, docker and tasks.
 │   └── workspace
 │       └── parameters.yaml  # File containing all extra parameters.
 └── project
-    ├── Dockerfile_CPU       # Docker file with instructions to create the image for the CPU version.
-    ├── Dockerfile_GPU       # Docker file with instructions to create the image for the GPU version.
+    ├── Dockerfile       # Docker file with instructions to create the image.
     ├── mlcube.py            # Python entrypoint used by MLCube, contains the logic for MLCube tasks.
     ├── requirements.txt     # Python requirements needed to run the project inside Docker.
     └── src
@@ -53,7 +51,7 @@ In this file (`requirements.txt`) you can add all the python dependencies needed
 
 ### Dockerfile
 
-You can use both, CPU or GPU version for the dockerfile (`Dockerfile_CPU`, `Dockerfile_GPU`), also, you can add or modify any steps inside the file, this comes handy when you need to install some OS dependencies or even when you want to change the base docker image, inside the file you can find some information about the existing steps.
+In this file users can define the image for CPU or GPU version, also, users add or modify any steps inside the file, this comes handy when you need to install some OS dependencies or even when you want to change the base docker image, inside the file you can find some information about the existing steps.
 
 ### Parameters file
 
@@ -61,7 +59,7 @@ This is a yaml file (`parameters.yaml`)that contains all extra parameters that a
 
 ### MLCube yaml file
 
-In these files (`mlcube_cpu`, `mlcube_gpu`) you can find the instructions about the docker image and platform that will be used, information about the project (name, description, authors), and also the tasks defined for the project.
+In this file you can find the instructions about the docker image and platform that will be used, information about the project (name, description, authors), and also the tasks defined for the project.
 
 In the existing implementation you will find 2 tasks:
 
@@ -97,17 +95,11 @@ In the `utilities.py` file you can add some functions that will be useful for yo
 ## Tasks execution
 
 ```bash
-# Run example task with CPU support.
-mlcube run --mlcube=mlcube_cpu.yaml --task=example
+# Run example task.
+mlcube run --mlcube=mlcube.yaml --task=example
 
-# Run main task with CPU support.
-mlcube run --mlcube=mlcube_cpu.yaml --task=infer
-
-# Run example task with GPU support.
-mlcube run --mlcube=mlcube_gpu.yaml --task=example
-
-# Run main task with GPU support.
-mlcube run --mlcube=mlcube_gpu.yaml --task=infer
+# Run main task.
+mlcube run --mlcube=mlcube.yaml --task=infer
 ```
 
 We are targeting pull-type installation, so MLCube images should be available on Docker Hub. If not, try this:
