@@ -19,13 +19,13 @@ of models, experiments and benchmarks amidst these existing MLOps processes. MLC
 acting as a contract and specification as opposed to a product or implementation. 
 
 This repository contains a number of MLCube examples that can run in different environments using 
-[MLCube runners](https://github.com/mlperf/mlcube). 
+[MLCube runners](https://github.com/mlcommons/mlcube). 
 
 1. [MNIST](./mnist) MLCube downloads data and trains a simple neural network. This MLCube can run with Docker or
    Singularity locally and on remote hosts. The [README](./mnist/README.md) file provides instructions on how to run it.
-   MLCube [documentation](https://mlperf.github.io/mlcube/getting-started/mnist/) provides additional details. 
+   MLCube [documentation](https://mlcommons.github.io/mlcube/getting-started/mnist/) provides additional details. 
 2. [Hello World](./hello_world) MLCube is a simple exampled described in this 
-   [tutorial](https://mlperf.github.io/mlcube/getting-started/hello-world/).
+   [tutorial](https://mlcommons.github.io/mlcube/getting-started/hello-world/).
 3. [EMDenoise](./emdenoise) MLCube downloads data and trains a deep convolutional neural network
    for Electron Microscopy Benchmark. This MLCube can only run the Docker container.
    The [README](./emdenoise/README.md) file provides instructions on how to run it.
