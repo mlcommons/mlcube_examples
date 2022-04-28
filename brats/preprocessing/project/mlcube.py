@@ -16,7 +16,7 @@ class PreprocessTask:
         data_path: str, parameters_file: str, output_path: str
     ) -> None:
 
-        cmd = f"python3 preprocess.py --data_path={data_path} \
+        cmd = f"python3 /workspace/preprocess.py --data_path={data_path} \
             --parameters_file {parameters_file} --output_path {output_path}"
         splitted_cmd = cmd.split()
 

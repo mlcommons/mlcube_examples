@@ -12,13 +12,13 @@ LABEL status="beta"
 RUN apt-get -y update && apt -y full-upgrade && apt-get -y install apt-utils wget git tar build-essential curl nano
 
 # install all python requirements
-WORKDIR /app
+WORKDIR /workspace
 COPY ./requirements.txt ./requirements.txt
 RUN pip3 install -r requirements.txt
 
 # copy all files
-COPY ./ ./
+COPY ./ /workspace
 
-RUN chmod +x ./run.sh
+RUN chmod +x /workspace/run.sh
 
-ENTRYPOINT [ "python3", "mlcube.py"]
+ENTRYPOINT [ "python3", "/workspace/mlcube.py"]

@@ -15,7 +15,7 @@ class EvaluateTask:
     def run(
         ground_truth: str, predictions: str, parameters_file: str, output_file: str
     ) -> None:
-        cmd = f"python3 metrics.py --ground_truth={ground_truth} --predictions={predictions} --parameters_file={parameters_file} --output_file={output_file}"
+        cmd = f"python3 /workspace/metrics.py --ground_truth={ground_truth} --predictions={predictions} --parameters_file={parameters_file} --output_file={output_file}"
         splitted_cmd = cmd.split()
 
         process = subprocess.Popen(splitted_cmd, cwd=".")
