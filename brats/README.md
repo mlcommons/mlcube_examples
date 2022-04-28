@@ -12,6 +12,20 @@ git fetch origin pull/39/head:feature/brats && git checkout feature/brats
 cd ./brats/metrics/mlcube
 ```
 
+## Execute docker-based MLCubes with Singularity runner
+
+```bash
+virtualenv -p python3 env && source ./env/bin/activate
+
+git clone https://github.com/mlcommons/mlcube && cd ./mlcube
+
+git fetch origin pull/223/head:feature/singularity_with_docker_images && git checkout feature/singularity_with_docker_images
+
+pip install semver spython && pip install ./mlcube
+
+pip install --no-deps --force-reinstall ./runners/mlcube_singularity
+```
+
 ## MedPerf API Server
 
 To run locally, clone this repo:
