@@ -91,7 +91,13 @@ The `run.sh` file is called from `mlcube.py` and it receives the arguments, here
 
 ```bash
 # Run preprocess task.
-mlcube run --mlcube=mlcube_cpu.yaml --task=preprocess
+mlcube run --mlcube=mlcube.yaml --task=preprocess
+```
+
+To use Singularity runner add the flag `--platform=singularity`, example:
+
+```bash
+mlcube run --mlcube=mlcube.yaml --task=preprocess --platform=singularity
 ```
 
 We are targeting pull-type installation, so MLCube images should be available on Docker Hub. If not, try this:

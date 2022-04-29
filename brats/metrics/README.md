@@ -88,7 +88,13 @@ The `metrics.py` file contains the main logic of the project, you can modify thi
 
 ```bash
 # Run evaluate task.
-mlcube run --mlcube=mlcube_cpu.yaml --task=evaluate
+mlcube run --mlcube=mlcube.yaml --task=evaluate
+```
+
+To use Singularity runner add the flag `--platform=singularity`, example:
+
+```bash
+mlcube run --mlcube=mlcube.yaml --task=evaluate --platform=singularity
 ```
 
 We are targeting pull-type installation, so MLCube images should be available on Docker Hub. If not, try this:
