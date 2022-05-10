@@ -14,7 +14,7 @@ To make sure that the containers submitted by the participants also run successf
 
 Please follow these steps to get started:
 <!-- TODO singularity stuff once it is ready -->
-- Install [docker](https://docs.docker.com/engine/install/).
+- Install [docker](https://docs.docker.com/engine/install/). You may also have to install the [NVIDIA container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#installing-on-ubuntu-and-debian) for GPU-support.
 <!-- - (Optional) Install [singularity](https://sylabs.io/guides/latest/user-guide/quick_start.html#quick-installation-steps). Only required if you want to test docker-to-singularity conversion yourself. -->
 - [Install MLCube](https://mlcommons.github.io/mlcube/getting-started/) (with docker runner) to a virtual/conda environment of your choice. For example:
 
