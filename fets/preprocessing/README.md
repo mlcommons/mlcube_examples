@@ -12,10 +12,9 @@ Please refer to the [FeTS challenge page](https://fets-ai.github.io/Challenge/da
 # Create Python environment and install MLCube Docker runner 
 virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker
 
-# Fetch the boston housing example from GitHub
-git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/39/head:feature/fets && git checkout feature/fets
-cd ./fets/preprocessing/mlcube
+# Fetch the examples from GitHub
+git clone https://github.com/mlcommons/mlcube_examples
+cd ./mlcube_examples/fets/model/mlcube
 ```
 
 ## Important files

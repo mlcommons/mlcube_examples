@@ -13,23 +13,62 @@ This repository contains three [MLCubes](https://github.com/mlcommons/mlcube) us
 virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker
 
 # Fetch the examples from GitHub
-git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/58/head:feature/fets && git checkout feature/fets
-cd ./fets/metrics/mlcube
+git clone https://github.com/mlcommons/mlcube_examples
+cd ./mlcube_examples/fets/model/mlcube
 ```
 
 ## Execute docker-based MLCubes with Singularity runner
+
+First, install the latest version of the Singularity runner.
 
 ```bash
 virtualenv -p python3 env && source ./env/bin/activate
 
 git clone https://github.com/mlcommons/mlcube && cd ./mlcube
 
-git fetch origin pull/223/head:feature/singularity_with_docker_images && git checkout feature/singularity_with_docker_images
+git fetch origin pull/241/head:feature/singularity_with_docker_images && git checkout feature/singularity_with_docker_images
 
 pip install semver spython && pip install ./mlcube
 
 pip install --no-deps --force-reinstall ./runners/mlcube_singularity
+```
+
+* To convert a Docker image hosted in DockerHub to Singularity, please specify the Docker image name with its tag inside the **mlcube.yaml** file, example:
+
+```yaml
+docker:
+  # Image name.
+  image: my_user/my_image:0.0.1
+```
+
+* To convert a local Docker image, first find the Docker image ID:
+
+```bash
+docker images
+#output:
+#REPOSITORY        TAG       IMAGE ID        CREATED        SIZE
+#my_image          latest    bf756fb1ae65    5 months ago   13.3kB
+```
+
+Then, create a tarball of the Docker image using the image ID:
+
+```bash
+docker save bf756fb1ae65 -o my_docker_image.tar 
+```
+
+Then, you must specify the path to the tarball file inside the **mlcube.yaml** file:
+
+```yaml
+docker:
+  # Image name.
+  image: my_user/my_image:0.0.1
+  tar_file: path_to/my_docker_image.tar
+```
+
+After getting the **mlcube.yaml** done with the needed data from the Docker image you want to convert, you can convert the image while running any MLCube task using the following command:
+
+```bash
+mlcube run --mlcube=mlcube.yaml --task=my_task --platform=singularity
 ```
 
 ## MedPerf API Server

@@ -28,9 +28,9 @@ virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-d
 <!-- TODO Update this once merged -->
 
 ```bash
-git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/39/head:feature/fets && git checkout feature/fets
-cd ./fets/model/mlcube
+# Fetch the examples from GitHub
+git clone https://github.com/mlcommons/mlcube_examples
+cd ./mlcube_examples/fets/model/mlcube
 ```
 
 To test your installation, you can run any of the commands in [this section](#tasks-execution).
