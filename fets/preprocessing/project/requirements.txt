@@ -3,3 +3,4 @@ typer
 numpy
 nibabel
 tqdm
+SimpleITK

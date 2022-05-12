@@ -1,1 +1,2 @@
-output_filename: "output.npy"
+input_filename: "BraTS_example_seg.nii.gz"
+output_filename: "output.nii.gz"
