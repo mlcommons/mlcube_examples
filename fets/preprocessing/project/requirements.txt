@@ -1,0 +1,6 @@
+PyYAML
+typer
+numpy
+nibabel
+tqdm
+SimpleITK
