@@ -5,7 +5,7 @@ The FeTS challenge 2022 task 2 focuses on how segmentation methods can learn fro
 In the FeTS challenge task 2, participants can submit their solution in the form of an MLCube docker image. Note that we do not impose restrictions on the participants how they train their model nor how they perform inference, as long as the resulting algorithm is compatible with the interface described here. After training a model, the following steps are required to submit it:
 
 1. Update the MLCube template with your custom code and dependencies ([guide below](#how-to-modify-this-project)).
-2. Build and test the docker image as described [below](#tasks-execution).
+2. Build and test the docker image as described [below](#task-execution).
 3. Submit the container as described on the [challenge website](https://www.synapse.org/#!Synapse:syn28546456/wiki/617255).
 
 To make sure that the containers submitted by the participants also run successfully on the remote institutions in the FeTS federation, we will offer functionality tests on a few toy cases. Details are provided in the [challenge website](https://www.synapse.org/#!Synapse:syn28546456/wiki/617255). Note that we will internally convert the submitted docker images into singularity images before running the evaluation.
@@ -33,7 +33,7 @@ git clone https://github.com/mlcommons/mlcube_examples
 cd ./mlcube_examples/fets/model/mlcube
 ```
 
-To test your installation, you can run any of the commands in [this section](#tasks-execution).
+To test your installation, you can run any of the commands in [this section](#task-execution).
 
 ## Important files
 
@@ -57,23 +57,27 @@ These are the most important files on this project:
             └── utilities.py # Python utilities file that stores useful functions.
 ```
 
-## Project workflow
-
-![MLCube workflow](https://i.imgur.com/qXRp3Tb.png)
-
 ## How to modify this project
 
 You can change each file described above in order to add your own implementation. In case you need more information on the internals of MLCube, check out the official [git repository](https://github.com/mlcommons/mlcube) or [documentation](https://mlcommons.github.io/mlcube/).
 
-### Requirements file
+<details><summary> **Requirements file** </summary>
+<p>
 
 In this file (`requirements.txt`) you can add all the python dependencies needed for running your implementation. These dependencies will be installed during the creation of the docker image, which happens automatically when you run the ```mlcube run ...``` command.
+</p>
+</details>
 
-### Dockerfile
+<details><summary> **Dockerfile** </summary>
+<p>
 
 This file can be adapted to add your own docker labels, install some OS dependencies or to change the base docker image. Note however that we *strongly recommend* to use one of our proposed base image, to make sure your application can be executed in the federated evaluation. Inside the file you can find some information about the existing steps.
 
-### MLCube yaml file
+</p>
+</details>
+
+<details><summary> **MLCube yaml file** </summary>
+<p>
 
 `mlcube.yaml` contains instructions about the docker image and platform that will be used, information about the project (name, description, authors), and also the tasks defined for the project. **Note** that this file is not submitted and changes will hence not have any effect in the official evaluation. We will use the provided template with the name of your docker image instead.
 
@@ -88,30 +92,53 @@ In the existing implementation you will find the `infer` task, which will be exe
 
 This task loads the input data, processes it and then saves the output result in the output_folder. It also prints some information from the extra parameters.
 
-### MLCube python file
+</p>
+</details>
+
+<details><summary> **MLCube python file** </summary>
+<p>
 
 The `mlcube.py` file is the handler file and entrypoint described in the dockerfile. Here you can find all the logic related to how to process each MLCube task. For most challenge participants, the provided template should be usable without modifications.
 If you want to add a new task first you must define it inside the `mlcube.yaml` file with its input and output parameters and then you need to add the logic to handle this new task inside the `mlcube.py` file.
 
-### Main logic file
+</p>
+</details>
+
+<details><summary> **Main logic file** </summary>
+<p>
 
 The `my_logic.py` file contains the main logic of the project; hence most of the custom implementations by challenge participants are required here. This logic file is called from the `mlcube.py` file.
 
 *Please make sure* that your MLCube obeyes the [conventions for input/output folders](#description-of-io-interface) after modification!
 
-### Utilities file
+</p>
+</details>
+
+<details><summary> **Utilities file** </summary>
+<p>
 
 In the `utilities.py` file you can add some functions that will be useful for your main implementation. In this case, the functions from the utilities file are used inside the main logic file.
 
-### Model checkpoint(s)
+</p>
+</details>
+
+<details><summary> **Model checkpoint(s)** </summary>
+<p>
 
 This directory contains model checkpoints that are loaded for inference. The checkpoints used for a challenge submission have to be stored inside the MLCube to guarantee reproducibility. Therefore, please copy them to the `project/model_ckpts` directory, which will be copied to the docker image if you use the provided Dockerfile.
 When testing your MLCube locally, different checkpoint directories can be passed to an existing MLCube without rebuilding the image, as described in the [example section](#tasks-execution)). 
 
-### Parameters file
+</p>
+</details>
+
+<details><summary> **Parameters file** </summary>
+<p>
 
 This file (`parameters.yaml`) contains all extra parameters that aren't files or directories. For example, here you can place all the hyperparameters that you will use for training a model. The parameters used for a challenge submission have to be stored inside the MLCube to guarantee reproducibility. Therefore, please copy the final paramters to the `project/parameters.yaml` file, which will be copied to the docker image if you use the provided Dockerfile.
 When testing your MLCube locally, different parameter files can be passed to an existing MLCube without rebuilding the image, as described in the [example section](#tasks-execution)). 
+
+</p>
+</details>
 
 ## Task execution
 
@@ -176,3 +203,8 @@ data/ # this path is passed for inference
 
 Furthermore, predictions for test cases should be placed in an output directory and named as follows: `<case-identifier>.nii.gz`
 An example for loading images and saving segmentations is included in [`my_logic.py`](project/src/my_logic.py).
+
+
+## Project workflow
+
+![MLCube workflow](https://i.imgur.com/qXRp3Tb.png)
