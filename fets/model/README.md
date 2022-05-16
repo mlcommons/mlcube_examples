@@ -61,14 +61,14 @@ These are the most important files on this project:
 
 You can change each file described above in order to add your own implementation. In case you need more information on the internals of MLCube, check out the official [git repository](https://github.com/mlcommons/mlcube) or [documentation](https://mlcommons.github.io/mlcube/).
 
-<details><summary> **Requirements file** </summary>
+<details><summary><b>Requirements file </b></summary>
 <p>
 
 In this file (`requirements.txt`) you can add all the python dependencies needed for running your implementation. These dependencies will be installed during the creation of the docker image, which happens automatically when you run the ```mlcube run ...``` command.
 </p>
 </details>
 
-<details><summary> **Dockerfile** </summary>
+<details><summary><b>Dockerfile </b></summary>
 <p>
 
 This file can be adapted to add your own docker labels, install some OS dependencies or to change the base docker image. Note however that we *strongly recommend* to use one of our proposed base image, to make sure your application can be executed in the federated evaluation. Inside the file you can find some information about the existing steps.
@@ -76,7 +76,7 @@ This file can be adapted to add your own docker labels, install some OS dependen
 </p>
 </details>
 
-<details><summary> **MLCube yaml file** </summary>
+<details><summary><b>MLCube yaml file </b></summary>
 <p>
 
 `mlcube.yaml` contains instructions about the docker image and platform that will be used, information about the project (name, description, authors), and also the tasks defined for the project. **Note** that this file is not submitted and changes will hence not have any effect in the official evaluation. We will use the provided template with the name of your docker image instead.
@@ -95,7 +95,7 @@ This task loads the input data, processes it and then saves the output result in
 </p>
 </details>
 
-<details><summary> **MLCube python file** </summary>
+<details><summary><b>MLCube python file </b></summary>
 <p>
 
 The `mlcube.py` file is the handler file and entrypoint described in the dockerfile. Here you can find all the logic related to how to process each MLCube task. For most challenge participants, the provided template should be usable without modifications.
@@ -104,7 +104,7 @@ If you want to add a new task first you must define it inside the `mlcube.yaml` 
 </p>
 </details>
 
-<details><summary> **Main logic file** </summary>
+<details><summary><b>Main logic file </b></summary>
 <p>
 
 The `my_logic.py` file contains the main logic of the project; hence most of the custom implementations by challenge participants are required here. This logic file is called from the `mlcube.py` file.
@@ -114,7 +114,7 @@ The `my_logic.py` file contains the main logic of the project; hence most of the
 </p>
 </details>
 
-<details><summary> **Utilities file** </summary>
+<details><summary><b>Utilities file </b></summary>
 <p>
 
 In the `utilities.py` file you can add some functions that will be useful for your main implementation. In this case, the functions from the utilities file are used inside the main logic file.
@@ -122,7 +122,7 @@ In the `utilities.py` file you can add some functions that will be useful for yo
 </p>
 </details>
 
-<details><summary> **Model checkpoint(s)** </summary>
+<details><summary><b>Model checkpoint(s) </b></summary>
 <p>
 
 This directory contains model checkpoints that are loaded for inference. The checkpoints used for a challenge submission have to be stored inside the MLCube to guarantee reproducibility. Therefore, please copy them to the `project/model_ckpts` directory, which will be copied to the docker image if you use the provided Dockerfile.
@@ -131,7 +131,7 @@ When testing your MLCube locally, different checkpoint directories can be passed
 </p>
 </details>
 
-<details><summary> **Parameters file** </summary>
+<details><summary><b>Parameters file </b></summary>
 <p>
 
 This file (`parameters.yaml`) contains all extra parameters that aren't files or directories. For example, here you can place all the hyperparameters that you will use for training a model. The parameters used for a challenge submission have to be stored inside the MLCube to guarantee reproducibility. Therefore, please copy the final paramters to the `project/parameters.yaml` file, which will be copied to the docker image if you use the provided Dockerfile.
