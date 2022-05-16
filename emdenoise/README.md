@@ -2,7 +2,7 @@
 
 ## EMDenoise: Electron Microscopy Benchmark
 
-Authors: Patrick Austin (RAL, STFC), Keith Butler (SciML, STFC)*, Jeyan Thiyagalingam*, and Tony Hey.
+Authors: Patrick Austin (RAL, STFC), Keith Butler (SciML, STFC)*, Jeyan Thiyagalingam(SciML, RAL, STFC)*, and Tony Hey.
 *(Corresponding)
 
 ### Overview
@@ -69,16 +69,40 @@ git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/
 ```
 
 ## Run EMDenoise MLCube on a local machine with Docker runner
-```
-# Configure EMDenoise MLCube
-mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
 
-# Run EMDenoise tasks: download data, preprocess data train and test the model
+### Configure EMDenoise MLCube
+
+```bash
+mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
+```
+
+### Run EMDenoise tasks: download data, preprocess data train and test the model
+
+```bash
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/download.yaml
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/preprocess.yaml
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/train.yaml
 mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/test.yaml
 ```
+
+
+## Run EMDenoise MLCube on a local machine with Docker runner
+
+### Configure EMDenoise MLCube
+
+```bash
+mlcube_singularity configure --mlcube=. --platform=platforms/singularity.yaml
+```
+
+### Run EMDenoise tasks: download data, preprocess data train and test the model
+
+```bash
+mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/download.yaml
+mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/preprocess.yaml
+mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/train.yaml
+mlcube_singularity run --mlcube=. --platform=platforms/singularity.yaml --task=run/test.yaml
+```
+
 Go to `workspace/` directory and study its content.
 
 ## Contribution
