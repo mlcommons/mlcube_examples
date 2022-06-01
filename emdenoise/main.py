@@ -1,4 +1,6 @@
 from __future__ import (absolute_import, division, print_function, unicode_literals)
+
+import sys
 from abc import (abstractmethod, ABC)
 import time
 import h5py
@@ -557,6 +559,7 @@ def main():
             raise ValueError(f"Unknown task: {task_args}")
     except Exception as err:
         logger.exception(err)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
