@@ -8,29 +8,34 @@ The matrix dimensions must be >=2 and the 2 inner dimensions must specify valid 
 
 ## Create and initialize python environment
 ```
-virtualenv -p python3 ./env && source ./env/bin/activate 
+virtualenv -p python3.9 ./env && source ./env/bin/activate
 ```
 
 ## Install MLCube and MLCube runners
 ```
-pip install mlcube mlcube-docker mlcube-singularity mlcube-ssh
+pip install mlcube mlcube-docker mlcube-singularity
 ``` 
 
-## Clone MLCube examples and go to matmul root directory
+## Clone MLCube examples and go to the mlcube_examples directory
 ```
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/matmul
+git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
 ```
+
+## MLCube checks if the system settings file exists each time it runs. If it does not exist, it will create it. Also, on every run MLCube finds new installed runners and updates system settings files. Run the following command to see if all runners are available: 
+```
+mlcube config --get runners
+```
+
+##  To see configuration parameters for the docker runner, run the following:
+```
+mlcube config --get platforms.docker
+```
+
+## Open the ~/mlcube.yaml file, find the section for the docker platform, and update values accordingly. Most likely only the docker parameter needs to be checked. To change runner parameters on a command line (when running MLCubes), use -Prunner.* pattern, e.g. -Prunner.build_strategy=auto or -Prunner.docker="sudo docker"
+
+ 
 
 ## Run Matmul MLCube on a local machine with Docker runner
 ```
-# Configure Matmul MLCube
-mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
-
-# Run Matmul tasks: You can change the shapes of the matrices that are multipled in workspace/shapes.yaml 
-mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/matmul.yaml
-```
-Go to `workspace/` directory and study its content. Then:
-```
-ls ./workspace
-cat ./workspace/matmul.txt
+mlcube --log-level=info run --mlcube=matmul --platform=docker --task=matmul
 ```
