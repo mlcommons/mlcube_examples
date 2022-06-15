@@ -8,29 +8,30 @@ The matrix dimensions must be >=2 and the 2 inner dimensions must specify valid 
 
 ## Create and initialize python environment
 ```
-virtualenv -p python3 ./env && source ./env/bin/activate 
+virtualenv -p python3.9 ./env && source ./env/bin/activate
 ```
 
 ## Install MLCube and MLCube runners
 ```
-pip install mlcube mlcube-docker mlcube-singularity mlcube-ssh
+pip install mlcube mlcube-docker mlcube-singularity
 ``` 
 
-## Clone MLCube examples and go to matmul root directory
+## Clone MLCube examples and go to mlcube_examples directory
 ```
-git clone https://github.com/mlperf/mlcube_examples.git && cd ./mlcube_examples/matmul
+git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
 ```
 
-## Run Matmul MLCube on a local machine with Docker runner
+## MLCube checks if system settings file exists each time it runs. If it does not exist, it will create it. Also, on every run MLCube finds new installed runners and updates system settings files. Run the following command to see if all runners are available:
 ```
-# Configure Matmul MLCube
-mlcube_docker configure --mlcube=. --platform=platforms/docker.yaml
+mlcube config --get runners
+```
 
-# Run Matmul tasks: You can change the shapes of the matrices that are multipled in workspace/shapes.yaml 
-mlcube_docker run --mlcube=. --platform=platforms/docker.yaml --task=run/matmul.yaml
+## To see configuration parameters for the docker runner, run the following:
 ```
-Go to `workspace/` directory and study its content. Then:
+mlcube config --get platforms.docker
 ```
-ls ./workspace
-cat ./workspace/matmul.txt
+
+## Run Matmul MLCube using docker runner.
+```
+mlcube --log-level=info run --mlcube=matmul --platform=docker --task=matmul
 ```
