@@ -1,0 +1,38 @@
+name: MLCommons Boston Housing
+description: MLCommons Boston Housing example
+authors: 
+ - {name: "MLCommons Best Practices Working Group"}
+
+platform:
+  accelerator_count: 0
+
+docker:
+  # Image name.
+  image: mlcommons/getting_started:0.0.1
+  # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_context: "../project"
+  # Docker file name within docker build context, default is `Dockerfile`.
+  build_file: "Dockerfile"
+
+tasks:
+  download_data:
+    entrypoint: python 01_download_dataset.py
+    # Download boston housing dataset
+    parameters:
+      # Directory where dataset will be saved.
+      outputs: {data_dir: data/}
+  preprocess_data:
+    entrypoint: python 02_preprocess_dataset.py
+    # Preprocess dataset
+    parameters:
+      # Same directory location where dataset was downloaded
+      inputs:
+        input_file: data/raw_dataset.txt
+      outputs:
+        output_file: {type: file, default:  data/processed_dataset.csv}
+  train:
+    entrypoint: python 03_train.py
+    # Train gradient boosting regressor model
+    parameters:
+      # Processed dataset file
+      inputs: {dataset_file_path: data/processed_dataset.csv}
