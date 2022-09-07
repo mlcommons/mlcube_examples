@@ -30,7 +30,7 @@ The most important thing that we need to remember about these scripts are the in
 
 **--dataset_file_path** : Processed dataset file path. Note: this is the full path to the csv file.
 
-## MLCube scructure
+## MLCube structure
 
 We'll need a couple of files for MLCube, first we'll need to create a folder called **mlcube** in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place)
 
@@ -81,7 +81,7 @@ virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-d
 
 # Fetch the boston housing example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/xx/head:feature/getting_started && git checkout feature/getting_started
+git fetch origin pull/65/head:feature/getting_started && git checkout feature/getting_started
 cd ./getting_started/mlcube
 ```
 
