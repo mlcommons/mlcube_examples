@@ -19,8 +19,12 @@ tasks:
     entrypoint: python 01_download_dataset.py
     # Download boston housing dataset
     parameters:
+      # Parameters file
+      inputs:
+        parameters_file: parameters.yaml
       # Directory where dataset will be saved.
-      outputs: {data_dir: data/}
+      outputs:
+        data_dir: data/
   preprocess_data:
     entrypoint: python 02_preprocess_dataset.py
     # Preprocess dataset
@@ -35,4 +39,6 @@ tasks:
     # Train gradient boosting regressor model
     parameters:
       # Processed dataset file
-      inputs: {dataset_file_path: data/processed_dataset.csv}
+      inputs:
+        dataset_file_path: data/processed_dataset.csv
+        parameters_file: parameters.yaml
