@@ -21,7 +21,7 @@ tasks:
     parameters:
       # Parameters file
       inputs:
-        parameters_file: parameters.yaml
+        parameters_file: {type:file, default:parameters.yaml}
       # Directory where dataset will be saved.
       outputs:
         data_dir: data/
