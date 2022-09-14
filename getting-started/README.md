@@ -30,14 +30,18 @@ The most important thing that we need to remember about these scripts are the in
 
 **--dataset_file_path** : Processed dataset file path. Note: this is the full path to the csv file.
 
+**--parameters_file** : File containing parameters in yaml format.
+
 ## MLCube structure
 
 We'll need a couple of files for MLCube, first we'll need to create a folder called **mlcube** in the same path from as project folder. We'll need to create the following structure (for this tutorial the files are already in place)
 
 ```bash
-├── mlcube
+├── mlcube/
 │   ├── mlcube.yaml
-└── project
+│   └── workspace/
+│       └── parameters.yaml
+└── project/
     ├── 01_download_dataset.py
     ├── 02_preprocess_dataset.py
     ├── 03_train.py
@@ -63,6 +67,10 @@ Keep in mind the tag that we just described.
 
 Inside the mlcube folder we'll need to define the following files.
 
+### MLCube parameters file
+
+We can use the **mlcube/workspace/parameters.yaml** file to describe all the input parameters we'll use (this file is already provided, please take a look and study its content), the idea is to describe all the parameters in this file and then use this single file as an input for the task. Then we can read the content of the parameters file in Python to pass these to our logic.
+
 ### MLCube task definition file
 
 The file located in **mlcube/mlcube.yaml** contains the definition of all the tasks and their parameters.
@@ -72,8 +80,6 @@ This file is already provided, please take a look and study its content.
 With this file we have finished the packing of the project into MLCube! Now we can setup the project and run all the tasks.
 
 ### Project setup
-
-## Project setup
 
 ```bash
 # Create Python environment and install MLCube Docker runner 
@@ -122,7 +128,7 @@ mlcube run --task=download_data,preprocess_data,train
 We are targeting pull-type installation, so MLCube images should be available on docker hub. If not, try this:
 
 ```bash
-mlcube run ... -Pdocker.build_strategy=auto
+mlcube run ... -Pdocker.build_strategy=always
 ```
 
 Parameters defined in mlcube.yaml can be overridden using: param=input, example:

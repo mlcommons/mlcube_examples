@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-ENTRYPOINT ["python", "03_train.py"]
+ENTRYPOINT ["python", "01_download_dataset.py"]
