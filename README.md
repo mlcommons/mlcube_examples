@@ -1,4 +1,4 @@
-# MLCube™ examples
+# MLCube examples
 
 The machine learning (ML) community has seen an explosive growth and innovation in the last decade. New models emerge 
 on a daily basis, but sharing those models remains an ad-hoc process. Often, when a researcher wants to use a model 
@@ -14,7 +14,7 @@ a variety of tools and processes that simplify user journey of deploying and man
 which include management of models, datasets, and dependencies, tracking of metadata and experiments, deployment and 
 management of ML lifecycles, automation of performance evaluations and analysis, etc.
 
-We propose an MLCube, a contract for packaging ML tasks and models that enables easy sharing and consistent reproduction 
+We propose an MLCube&reg;, a contract for packaging ML tasks and models that enables easy sharing and consistent reproduction 
 of models, experiments and benchmarks amidst these existing MLOps processes. MLCube differs from an operation tool by 
 acting as a contract and specification as opposed to a product or implementation. 
 
