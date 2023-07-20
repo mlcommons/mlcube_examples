@@ -1,6 +1,6 @@
 # MNIST MLCube
 
-This example MLCube trains a simple neural network using MNIST dataset. Concretely, it implements two tasks:
+This example MLCube&reg; trains a simple neural network using MNIST dataset. Concretely, it implements two tasks:
 
 - `download` task downloads MNIST dataset.
 - `train` trains a DL model.

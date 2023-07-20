@@ -1,6 +1,6 @@
 # Packing an existing project into MLCube
 
-In this tutorial we're going to use the [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html). We'll take an existing implementation, create the needed files to pack it into MLCube and execute all tasks.
+In this tutorial we're going to use the [Boston Housing Dataset](https://www.cs.toronto.edu/~delve/data/boston/bostonDetail.html). We'll take an existing implementation, create the needed files to pack it into MLCube&reg; and execute all tasks.
 
 ## Original project code
 

@@ -1,6 +1,6 @@
 # MedPerf - MLCube - Federated Tumor Segmentation Challenge
 
-This repository contains three [MLCubes](https://github.com/mlcommons/mlcube) used throughout the organization of the FeTS challenge:
+This repository contains three [MLCube&reg;](https://github.com/mlcommons/mlcube) projects used throughout the organization of the FeTS challenge:
 
 1. Preprocessing: This MLCube contains the preprocessing pipeline employed in FeTS (which is identical to BraTS).
 2. Model: This MLCube can be used by **task-2 competitors** to build their inference application. If you are looking for how to prepare your FeTS task-2 submission, please continue reading [here](model).
