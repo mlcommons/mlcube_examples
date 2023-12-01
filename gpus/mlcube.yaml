@@ -18,7 +18,7 @@ docker:
 
 tasks:
   check_gpus:
-    entrypoint: ./check_gpus.sh -a
+    entrypoint: ./check_gpus.sh
     parameters:
       outputs:
         log_dir: logs/
