@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0-base
+FROM nvidia/cuda:11.6.1-base-ubuntu20.04
 
 # Copy code
 COPY . /workspace

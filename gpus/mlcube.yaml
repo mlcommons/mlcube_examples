@@ -14,7 +14,7 @@ docker:
   # Docker file name within docker build context, default is `Dockerfile`.
   build_file: "Dockerfile"
   # GPU arguments
-  gpu_args: "--gpus=all"
+  gpu_args: "--gpus=1"
 
 tasks:
   check_gpus:
