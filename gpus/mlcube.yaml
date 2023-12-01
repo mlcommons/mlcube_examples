@@ -1,0 +1,24 @@
+name: check_gpus
+description: Check gpus example
+authors:
+  - { name: "MLCommons Best Practices Working Group" }
+
+platform:
+  accelerator_count: 1
+
+docker:
+  # Image name.
+  image: dfjbtest/gpus_example:0.0.1
+  # Docker build context relative to $MLCUBE_ROOT. Default is `build`.
+  build_context: "./"
+  # Docker file name within docker build context, default is `Dockerfile`.
+  build_file: "Dockerfile"
+  # GPU arguments
+  gpu_args: "--gpus=1"
+
+tasks:
+  check_gpus:
+    entrypoint: ./check_gpus.sh
+    parameters:
+      outputs:
+        log_dir: logs/
