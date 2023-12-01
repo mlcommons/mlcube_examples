@@ -9,7 +9,7 @@ An important requirement is that you must have Docker and/or Singularity install
 virtualenv -p python3 ./env && source ./env/bin/activate && pip install mlcube-docker mlcube-singularity
 # Fetch the gpus example from GitHub
 git clone https://github.com/mlcommons/mlcube_examples && cd ./mlcube_examples
-git fetch origin pull/xxx/head:feature/gpu_example && git checkout feature/gpu_example
+git fetch origin pull/68/head:feature/gpu_example && git checkout feature/gpu_example
 cd ./gpu_example/
 ```
 
